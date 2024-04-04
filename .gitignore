@@ -75,6 +75,18 @@
 *.VC.db
 *.VC.opendb
 
+# Plugin Resources
+Plugins/OrbitDebugDisplay/Resources
+
+# Configs
+Config/
+
+# Project File
+*.uproject
+
+# Maps
+Content/Maps/
+
 # Precompiled Assets
 SourceArt/**/*.png
 SourceArt/**/*.tga
