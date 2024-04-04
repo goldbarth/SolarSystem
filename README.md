@@ -8,3 +8,6 @@ designed as a practical introduction to C++, game physics, and basic engine conc
 #### Documentation
 [English](Intermediate/ProjectFiles/docs/en/README.md) | [German](Intermediate/ProjectFiles/docs/de/README.md)
 
+Credits: [Sebastian Lague](https://github.com/SebLague) for the original idea and inspiration.
+And of course the Outer Wilds game for his inspiration and the idea of the project.
+
