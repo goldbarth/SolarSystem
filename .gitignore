@@ -34,6 +34,7 @@
 
 # Visual Studio 2015 user specific files
 .vs/
+.vsconfig
 
 # Compiled Object files
 *.slo
@@ -81,8 +82,14 @@ Plugins/OrbitDebugDisplay/Resources
 # Configs
 Config/
 
+# C# Files
+*.cs
+
 # Project File
 *.uproject
+
+# Plugin File
+*.uplugin
 
 # Maps
 Content/Maps/

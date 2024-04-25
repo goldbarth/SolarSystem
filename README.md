@@ -6,8 +6,9 @@ Multilingual documentation for the Solar System Simulation project in Unreal Eng
 designed as a practical introduction to C++, game physics, and basic engine concepts.
 
 #### Documentation
-[English](Intermediate/ProjectFiles/docs/en/README.md) | [German](Intermediate/ProjectFiles/docs/de/README.md)
+[English](docs/en/README.md) | [German](docs/de/README.md)
 
-Credits: [Sebastian Lague](https://github.com/SebLague) for the original idea and inspiration.
-And of course the Outer Wilds game for his inspiration and the idea of the project.
+#### Credits: 
+[Sebastian Lague](https://github.com/SebLague) for the original idea and inspiration.
+And of course [Outer Wilds](https://www.mobiusdigitalgames.com/outer-wilds.html) the game, for his inspiration and the idea of the project.
 

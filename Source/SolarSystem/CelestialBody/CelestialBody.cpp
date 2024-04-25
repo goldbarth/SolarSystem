@@ -19,7 +19,6 @@ void ACelestialBody::BeginPlay()
 {
 	Super::BeginPlay();
 	SetCurrentVelocity(InitialVelocity);
-	SetRadius();
 	MassCalculation();
 	
 	FTimerHandle TimerHandle;
@@ -38,14 +37,7 @@ void ACelestialBody::SetMass(const float& NewMass)
 {
 	Mass = NewMass;
 	MeshComponent->SetMassOverrideInKg(NAME_None, Mass, true);
-	GravityCalculation();
-}
-
-void ACelestialBody::MassCalculation()
-{
-	Mass = Radius * Radius / FUniverse::GravitationalConstant;
-	MeshComponent->SetMassOverrideInKg(NAME_None, Mass, true);
-	
+	// GravityCalculation();
 }
 
 void ACelestialBody::UpdateVelocity(const FVector& Acceleration, const float& TimeStep)
@@ -56,6 +48,12 @@ void ACelestialBody::UpdateVelocity(const FVector& Acceleration, const float& Ti
 void ACelestialBody::UpdatePosition(const float& TimeStep) const
 {
 	MeshComponent->SetPhysicsLinearVelocity(CurrentVelocity * TimeStep);
+}
+
+void ACelestialBody::MassCalculation()
+{
+	Mass = Radius * Radius / FUniverse::GravitationalConstant;
+	MeshComponent->SetMassOverrideInKg(NAME_None, Mass, true);
 }
 
 void ACelestialBody::AddObjectToRegistry()

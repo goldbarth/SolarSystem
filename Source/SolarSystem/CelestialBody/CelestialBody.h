@@ -46,13 +46,13 @@ public:
 	void SetCurrentVelocity(const FVector& NewVelocity) { CurrentVelocity = NewVelocity; }
 
 	FLinearColor GetLineColor() const { return LineColor; }
-
+	
 	void UpdatePosition(const float& TimeStep) const;
 	void UpdateVelocity(const FVector& Acceleration, const float& TimeStep);
 
 private:
 	void SetMeshComponent();
 	void MassCalculation();
-	void GravityCalculation();
+	// void GravityCalculation();
 	void AddObjectToRegistry();
 };
