@@ -22,7 +22,7 @@ void ACelestialBody::BeginPlay()
 	MassCalculation();
 	
 	FTimerHandle TimerHandle;
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &ACelestialBody::AddObjectToRegistry, 0.5f, false);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &ACelestialBody::AddBodyToRegistry, 0.5f, false);
 }
 
 void ACelestialBody::SetMeshComponent()
@@ -56,7 +56,7 @@ void ACelestialBody::MassCalculation()
 	MeshComponent->SetMassOverrideInKg(NAME_None, Mass, true);
 }
 
-void ACelestialBody::AddObjectToRegistry()
+void ACelestialBody::AddBodyToRegistry()
 {
 	ADemoOrbitSimulation_GameMode* GameMode = Cast<ADemoOrbitSimulation_GameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode)

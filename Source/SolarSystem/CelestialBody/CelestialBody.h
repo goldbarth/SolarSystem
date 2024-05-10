@@ -54,5 +54,5 @@ private:
 	void SetMeshComponent();
 	void MassCalculation();
 	// void GravityCalculation();
-	void AddObjectToRegistry();
+	void AddBodyToRegistry();
 };

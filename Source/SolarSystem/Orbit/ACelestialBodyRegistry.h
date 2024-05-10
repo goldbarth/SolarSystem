@@ -20,7 +20,7 @@ class SOLARSYSTEM_API ACelestialBodyRegistry : public AActor
 public:
 	ACelestialBodyRegistry();
 
-	UPROPERTY(BlueprintAssignable, Category = "Events")
+	UPROPERTY(BlueprintAssignable)
 	FCelestialObjectAddedDelegate OnCelestialBodyAdded;
 
 protected:
@@ -32,5 +32,6 @@ public:
 	void AddCelestialObject(ACelestialBody* CelestialObject);
 	
 	void RemoveCelestialObject(ACelestialBody* CelestialObject);
+	
 	TArray<ACelestialBody*> GetCelestialObjects() const { return CelestialBodies; }
 };

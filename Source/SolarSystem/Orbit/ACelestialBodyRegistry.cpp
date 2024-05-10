@@ -3,8 +3,6 @@
 
 #include "ACelestialBodyRegistry.h"
 
-#include "SolarSystem/GameModes/DemoOrbitSimulation_GameMode.h"
-
 
 ACelestialBodyRegistry::ACelestialBodyRegistry()
 {
