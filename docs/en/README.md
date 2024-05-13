@@ -27,6 +27,13 @@ Disclaimer: The project is a work in progress and may be subject to changes and 
     - [OrbitSimulation class](#orbitsimulation-class)
       - [Properties](#orbitsimulation-properties)
       - [Functions](#orbitsimulation-functions)
+      - [Expanding the game-mode class](#expanding-the-game-mode-class)
+    - [Creating the Simulation](#creating-the-simulation)
+      - [Creating the level](#creating-the-level)
+      - [Adding the game-mode](#adding-the-game-mode)
+      - [Adding the celestial bodies](#adding-the-celestial-bodies)
+        - [Creating the base blueprint](#creating-the-base-blueprint)
+        - [Creating the base material](#creating-the-base-material)
 - [Resources](#resources)
 
 <a name="introduction"></a>
@@ -116,7 +123,7 @@ We will deal with the source file `CelestialBody.cpp` later.
 
 
 <a name="celestialbody-properties"></a>
-###### *CelestialBody Properties*
+###### *CelestialBody Properties:*
 
 For now, let's add the properties to define the celestial bodies.
 
@@ -124,7 +131,8 @@ We need the following properties:
 - mass
 - radius
 - initial velocity
-- current velocity
+- current velocity and
+- line color for the orbit visualization 
 
 The properties for the celestial bodies should look like this:
 
@@ -143,10 +151,15 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Celestial Body")
 	FVector CurrentVelocity;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug Options")
+	mutable FLinearColor LineColor;
 ```
 
 The mass, radius and initial velocity are editable in the blueprint so that we can configure the celestial bodies in the editor.
 The current velocity is read-only, as it changes during the simulation.
+The line color is editable in the blueprint to visualize the orbits of the celestial bodies.
+It is also mutable so that it can be changed in a const function.
 
 We also need a mesh component to make the celestial body visible in the editor and to enable the physics simulation,
 in which we set the mesh components mass and get the radius of the component.
@@ -163,7 +176,7 @@ protected:
 
 
 <a name="mesh-initialization"></a>
-###### *Mesh Initialization*
+###### *Mesh Initialization:*
 
 The mesh component is initialized in the constructor.
 
@@ -271,6 +284,7 @@ The formula for the mass calculation is
 `m = r² * G` or `Mass = Radius * Radius * G`.
 The result is saved in the mass property, and the mass of the mesh component is overwritten.
 
+------------------------------------------------------------------------------------------------------------
 
 <a name="gravitational-constant"></a>
 ##### Gravitational Constant
@@ -706,7 +720,7 @@ void AOrbitSimulation::UpdateAllObjects(const float& TimeStep) const
 	}
 	else
 	{
-		LOG_DISPLAY(“CelestialObjectManager is nullptr! In Orbit Simulation!”);
+		UE_LOG(LogTemp, error, TEXT(“CelestialObjectManager is nullptr! In Orbit Simulation!”);
 	}
 	
 }
@@ -773,20 +787,20 @@ the distance `R` and the distance squares `SqrR` are calculated to determine the
 
 The gravitational acceleration is calculated for each celestial body and summed to obtain the total acceleration.
 
-Next, we add the function `GetCelestialObjectManager` to get and initialize the `CelestialBodyRegistry`.
+Next, we add the function `GetCelestialObjectRegistry` to get and initialize the `CelestialBodyRegistry`.
 
 The implementation of the function should look like this in the source file `OrbitSimulation.cpp`:
 
 ```cpp
-void AOrbitSimulation::GetCelestialObjectManager()
+void AOrbitSimulation::GetCelestialObjectRegistry()
 {
-	ADemoOrbitSimulation_GameMode* GameMode = Cast<ADemoOrbitSimulation_GameMode>(GetWorld()->GetAuthGameMode());
+	AOrbitSimulation_GameMode* GameMode = Cast<AOrbitSimulation_GameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode)
 	{
 		CelestialBodyRegistry = GameMode->GetCelestialBodyRegistry();
 		if (!CelestialBodyRegistry)
 		{
-			UE_LOG(LogTemp, Display, TEXT("Something went wrong! Failed to create CelestialObjectManager! In Orbit Simulation!”)
+			UE_LOG(LogTemp, Display, TEXT("Something went wrong! Failed to create CelestialObjectRegistry! In Orbit Simulation!”)
 		}
 	}
 	else
@@ -796,7 +810,7 @@ void AOrbitSimulation::GetCelestialObjectManager()
 }
 ```
 
-The function `GetCelestialObjectManager` calls the GameMode to get and initialize the `CelestialBodyRegistry`.
+The function `GetCelestialObjectRegistry` calls the GameMode to get and initialize the `CelestialBodyRegistry`.
 
 The function is called in the `BeginPlay` to initialize the registry.
 
@@ -807,7 +821,7 @@ void AOrbitSimulation::BeginPlay()
 {
     Super::BeginPlay();
     
-    GetCelestialObjectManager();
+    GetCelestialObjectRegistry();
 }
 ```
 
@@ -831,7 +845,97 @@ and can be adjusted to control the simulation.
 
 By setting the scalable DeltaTime, the simulation can be controlled to increase or decrease the speed of the simulation.
 
-Now we can start the simulation and calculate the orbits of the celestial bodies.
+Now we can calculate the orbits of the celestial bodies and create a simulation.
+
+<a name="expanding-the-game-mode-class"></a>
+#### Expanding the Game-Mode Class
+
+To start the simulation and to register and manage the celestial bodies, we need to extend the GameMode class.
+
+The implementation of the function should look like this in the source file `OrbitSimulation_GameMode.cpp`:
+
+```cpp
+void ADemoOrbitSimulation_GameMode::Initialize()
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		CelestialBodyRegistry = World->SpawnActor<ACelestialBodyRegistry>();
+		if (!CelestialBodyRegistry)
+		{
+			UE_LOG(LogTemp, error, TEXT("Failed to create CelestialObjectManager! (DemoOrbitSimulation_GameMode)”)
+		}
+		else
+		{
+			UE_LOG(LogTemp, display, TEXT("Created CelestialBodyRegistry! (DemoOrbitSimulation_GameMode)”)
+		}
+		OrbitSimulation = World->SpawnActor<AOrbitSimulation>();
+		if (!OrbitSimulation)
+		{
+			UE_LOG(LogTemp, error, TEXT("Failed to create OrbitSimulation! (DemoOrbitSimulation_GameMode)”)
+		}
+		else
+		{
+			UE_LOG(LogTemp, display, TEXT("Created OrbitSimulation! (DemoOrbitSimulation_GameMode)”)
+		}
+	}
+}
+```
+
+We add the `OrbitSimulation` property to control the simulation and calculate the orbits.
+
+------------------------------------------------------------------------------------------------------------
+
+<a name="creating-the-simulation"></a>
+## Creating the Simulation
+
+<a name="creating-the-level"></a>
+### Creating the Level
+
+In the engine in the Content Browser, we create a folder called `Maps`.
+In the folder, we create a new level file,
+e.g. `SolarSystemSimulation`, by right-clicking on the `Maps` folder and then clicking on `Level`.
+
+<a name="adding-the-game-mode"></a>
+##### *Adding the Game-Mode:*
+
+We can set the GameMode in the World Settings of the level
+to start the simulation and to register and manage the celestial bodies.
+
+<a name="adding-the-celestial-bodies"></a>
+### Adding the Celestial Bodies
+
+To use the celestial bodies in the simulation, we need a basic blueprint and material for the celestial bodies.
+
+<a name="creating-the-base-blueprint"></a>
+##### *Creating the Base Blueprint:*
+
+Let's create a base blueprint for the celestial bodies
+by right-clicking on the Blueprints folder we created earlier and then clicking on Blueprint Class.
+We search for `CelestialBody` and select the class as parent class.
+We name the class e.g. `BP_CelestialBodyBase`.
+
+As static mesh for the celestial bodies we use a sphere,
+which we create in the editor and set as static mesh for the celestial body.
+
+This means that we do not have to create a new blueprint for each celestial body,
+but can use the basic blueprint and configure the properties in the editor.
+
+<a name="creating-the-base-material"></a>
+##### *Creating the Base Material:*
+
+Let's
+create a base material for the celestial bodies
+by right-clicking on the `Materials` folder we created earlier and then clicking on `Material`.
+We name the material e.g. `M_CelestialBodySurfaceBase`.
+We add three parameters to the material as an absolute base:
+- Base Color
+- Metallic
+- Roughness
+
+The material is used as the base for the celestial bodies and can be configured as an instance for the celestial bodies in the editor.
+
+
 
 
 ------------------------------------------------------------------------------------------------------------

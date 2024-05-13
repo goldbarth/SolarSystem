@@ -27,6 +27,16 @@ Hinweis: Das Projekt ist in laufender Entwicklung und kann Änderungen und Aktua
     - [OrbitSimulation Klasse](#orbitsimulation-klasse)
       - [Properties](#orbitsimulation-properties)
       - [Funktionen](#orbitsimulation-funktionen)
+      - [Erweiterung der Game-Mode Klasse](#erweiterung-der-game-mode-klasse)
+    - [Erstellen der Simulation](#erstellen-der-simulation)
+      - [Level erstellen](#level-erstellen)
+      - [GameMode hinzufügen](#gamemode-hinzufügen)
+      - [Himmelskörper hinzufügen](#die-himmelskörper-hinzufügen)
+        - [Basis Blueprint erstellen](#basis-blueprint-erstellen)
+        - [Basis Material erstellen](#basis-material-erstellen)
+      - [OrbitSimulation hinzufügen](#orbitsimulation-hinzufügen)
+      - [CelestialBodyRegistry hinzufügen](#celestialbodyregistry-hinzufügen)
+      - [Simulation starten](#simulation-starten)
 - [Einsatzmittel](#einsatzmittel)
 
 <a name="einführung"></a>
@@ -126,7 +136,8 @@ Wir benötigen folgende Properties:
 - Masse
 - Radius
 - Initialgeschwindigkeit
-- Aktuelle Geschwindigkeit
+- Aktuelle Geschwindigkeit und 
+- Linien Farbe für die Orbit-Visualisierung
 
 Die Properties für die Himmelskörper sollten folgendermaßen aussehen:
 
@@ -145,10 +156,15 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Celestial Body")
 	FVector CurrentVelocity;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug Options")
+	mutable FLinearColor LineColor;
 ```
 
 Die Masse, der Radius und die Initialgeschwindigkeit sind im Blueprint editierbar, damit wir die Himmelskörper im Editor konfigurieren können.
 Die aktuelle Geschwindigkeit ist nur lesbar, da sie sich während der Simulation ändert.
+Die Linienfarbe ist im Blueprint editierbar, um die Orbits zu visualisieren.
+Außerdem ist sie mutable, damit sie in einer const-Funktion geändert werden kann.
 
 Außerdem brauchen wir noch eine Mesh-Komponente, um den Himmelskörper im Editor sichtbar zu machen und die Physiksimulation zu ermöglichen, 
 in dem wir die Mesh-Komponenten Masse setzen und den Radius der Komponente bekommen.
@@ -298,8 +314,10 @@ void ACelestialBody::BeginPlay()
 }
 ```
 
+------------------------------------------------------------------------------------------------------------
+
 <a name="gravitationskonstante"></a>
-##### Gravitationskonstante:
+##### Gravitationskonstante
 
 <sup>*</sup> Die Gravitationskonstante `G` und die Struktur `FUniverse` definieren wir in der neu erstellten Header-Datei `Universe.h`.
 
@@ -564,7 +582,7 @@ Jetzt können wir die GameMode-Klasse verwenden, um die Simulation zu steuern un
 
 
 <a name="erweiterung-celestialbody-klasse"></a>
-##### Erweiterung der CelestialBody Klasse:
+##### Erweiterung der CelestialBody Klasse
 
 Um die Himmelskörper in der Simulation zu verwenden, müssen wir die `CelestialBody`-Klasse erweitern, um die Registrierung und Verwaltung der Himmelskörper zu ermöglichen.
 
@@ -709,7 +727,7 @@ private:
 
 	FVector CalculateGravitationalAcceleration(const FVector& OtherPosition, const ACelestialBody* Object) const;
 	
-	void GetCelestialObjectManager();
+	void GetCelestialObjectRegistry();
 ```
 
 Die Implementierung der Update-Funktionen sollte in der Quelldatei `OrbitSimulation.cpp` wie folgt aussehen:
@@ -724,7 +742,7 @@ void AOrbitSimulation::UpdateAllObjects(const float& TimeStep) const
 	}
 	else
 	{
-		LOG_DISPLAY("CelestialObjectManager is nullptr! In Orbit Simulation!");
+		UE_LOG(LogTemp, error, TEXT("CelestialObjectManager is nullptr! In Orbit Simulation!");
 	}
 	
 }
@@ -788,20 +806,20 @@ Dazu wird die Gravitationskonstante `G`, die Masse `M`, die Distanz `R` und die 
 
 Die Gravitationsbeschleunigung wird für jeden Himmelskörper berechnet und aufsummiert, um die Gesamtbeschleunigung zu erhalten.
 
-Als Nächstes fügen wir die Funktion `GetCelestialObjectManager` hinzu, um die `CelestialBodyRegistry` zu erhalten und zu initialisieren.
+Als Nächstes fügen wir die Funktion `GetCelestialBodyRegistry` hinzu, um die `CelestialBodyRegistry` zu erhalten und zu initialisieren.
 
 Die Implementierung der Funktion sollte in der Quelldatei `OrbitSimulation.cpp` wie folgt aussehen:
 
 ```cpp
-void AOrbitSimulation::GetCelestialObjectManager()
+void AOrbitSimulation::GetCelestialBodyRegistry()
 {
-	ADemoOrbitSimulation_GameMode* GameMode = Cast<ADemoOrbitSimulation_GameMode>(GetWorld()->GetAuthGameMode());
+	AOrbitSimulation_GameMode* GameMode = Cast<AOrbitSimulation_GameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode)
 	{
 		CelestialBodyRegistry = GameMode->GetCelestialBodyRegistry();
 		if (!CelestialBodyRegistry)
 		{
-			UE_LOG(LogTemp, Display, TEXT("Something went wrong! Failed to create CelestialObjectManager! In Orbit Simulation!")
+			UE_LOG(LogTemp, Display, TEXT("Something went wrong! Failed to create CelestialBodyRegistry! In Orbit Simulation!")
 		}
 	}
 	else
@@ -822,7 +840,7 @@ void AOrbitSimulation::BeginPlay()
 {
     Super::BeginPlay();
     
-    GetCelestialObjectManager();
+    GetCelestialObjectRegistry();
 }
 ```
 
@@ -845,7 +863,90 @@ Die Konstante `FUniverse::TimeStep` wird als Zeitintervall für die Simulation v
 
 Durch das Setzten der skalierbaren DeltaTime kann die Simulation gesteuert werden, um die Geschwindigkeit der Simulation zu erhöhen oder zu verringern.
 
-Jetzt können wir die Simulation starten und die Orbits der Himmelskörper berechnen.
+Jetzt können wir die Orbits der Himmelskörper berechnen und daraus eine Simulation erstellen.
+
+<a name="erweiterung-der-game-mode-klasse"></a>
+### Erweiterung der Game-Mode Klasse
+
+Um die Simulation zu starten und die Himmelskörper zu registrieren und zu verwalten, müssen wir die GameMode-Klasse erweitern.
+
+Die Implementierung der Funktion sollte in der Quelldatei `OrbitSimulation_GameMode.cpp` wie folgt aussehen:
+
+```cpp
+void ADemoOrbitSimulation_GameMode::Initialize()
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		CelestialBodyRegistry = World->SpawnActor<ACelestialBodyRegistry>();
+		if (!CelestialBodyRegistry)
+		{
+			UE_LOG(LogTemp, error, TEXT("Failed to create CelestialObjectManager! (DemoOrbitSimulation_GameMode)")
+		}
+		else
+		{
+			UE_LOG(LogTemp, display, TEXT("Created CelestialBodyRegistry! (DemoOrbitSimulation_GameMode)")
+		}
+		OrbitSimulation = World->SpawnActor<AOrbitSimulation>();
+		if (!OrbitSimulation)
+		{
+			UE_LOG(LogTemp, error, TEXT("Failed to create OrbitSimulation! (DemoOrbitSimulation_GameMode)")
+		}
+		else
+		{
+			UE_LOG(LogTemp, display, TEXT("Created OrbitSimulation! (DemoOrbitSimulation_GameMode)")
+		}
+	}
+}
+```
+
+Wir fügen die `OrbitSimulation`-Property hinzu, um die Simulation zu steuern und die Orbits zu berechnen.
+
+------------------------------------------------------------------------------------------------------------
+
+<a name="erstellen-der-simulation"></a>
+## Erstellen der Simulation
+
+<a name="level-erstellen"></a>
+### Level erstellen:
+
+In der Engine im Content Browser erstellen wir einen Ordner `Maps`.
+In dem Ordner erstellen wir eine neue Level-Datei, z.B. `SolarSystemSimulation`, in dem wir mit Rechtsklick auf den Ordner `Maps` und dann auf `Level` klicken.
+
+<a name = "gamemode-hinzufügen"></a>
+##### *GameMode hinzufügen:*
+
+Den GameMode können wir in den World Settings des Levels setzen, um die Simulation zu starten und die Himmelskörper zu registrieren und zu verwalten.
+
+<a name = "die-himmelskoerper-hinzufügen"></a>
+### Die Himmelskörper hinzufügen
+
+Um die Himmelskörper in der Simulation zu verwenden, brauchen wir ein Basis-Blueprint und Material für die Himmelskörper.
+
+<a name = "basis-blueprint-erstellen"></a>
+##### *Basis Blueprint erstellen:*
+
+Erstellen wir ein Basis-Blueprint für die Himmelskörper, indem wir mit Rechtsklick auf den Ordner `Blueprints` den wir vorher erstellen und dann auf `Blueprint Class` klicken.
+Wir suchen nach `CelestialBody` und wählen die Klasse als Parent Class aus.
+Wir benennen die Klasse z.B. `BP_CelestialBodyBase`.
+
+Als Static Mesh für die Himmelskörper verwenden wir eine Sphere, die wir im Editor erstellen und als Static Mesh für den Himmelskörper setzen.
+
+So müssen wir nicht für jeden Himmelskörper ein neues Blueprint erstellen, sondern können das Basis Blueprint verwenden und die Eigenschaften im Editor konfigurieren.
+
+<a name = "basis-material-erstellen"></a>
+##### *Basis Material erstellen:*
+
+Erstellen wir ein Basis-Material für die Himmelskörper, indem wir mit Rechtsklick auf den Ordner `Materials` den wir vorher erstellen und dann auf `Material` klicken.
+Wir benennen das Material z.B. `M_CelestialBodySurfaceBase`.
+Dem Material fügen wir drei Parameter als absolute Basis hinzu:
+- Base Color
+- Metallic
+- Roughness
+
+Das Material wird als Basis für die Himmelskörper verwendet und kann als Instanz für die Himmelskörper im Editor konfiguriert werden.
+
+
 
 
 ------------------------------------------------------------------------------------------------------------
