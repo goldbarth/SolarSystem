@@ -1027,8 +1027,16 @@ Das liegt daran, dass wir noch keine Post-Processing Effekte hinzugefügt haben.
 Dazu erstellen wir ein neues Post-Processing Volume, indem wir über das Plus-Symbol im Editor über `Volume` und dann `Post-Processing Volume` klicken.
 Das Volume wird automatisch in die Szene hinzugefügt und wir können die Einstellungen im Details Panel konfigurieren.
 
+![Post-Processing Volume hinzufügen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-ppv.png)
+
 Zwei wichtige Einstellungen sind `Unbound` bzw. `Infinite Extent`, da setzen wir den Haken, damit das Volume in der ganzen Szene wirkt.
+
+![Post-Processing Volume konfigurieren 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-unbound.png)
+
 Unter Exposure die Auto-Exposure `Min EV100` und `Max EV100` auf `0` setzen.
+
+![Post-Processing Volume konfigurieren 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-auto-exposure.png)
+
 Die eingestellte Auto-Exposure sorgt dafür, dass die Helligkeit in jeder Szenerie gleich bleibt. 
 
 <a name = "erde-erstellen"></a>

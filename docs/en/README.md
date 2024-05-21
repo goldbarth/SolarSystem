@@ -1019,9 +1019,18 @@ This is because we have not yet added any post-processing effects.
 To do this, we create a new post-processing volume by clicking on the plus symbol in the editor via 'Volume' and then 'Post-Processing Volume'.
 The volume is automatically added to the scene, and we can configure the settings in the Details Panel.
 
+![Add Post Processing Volume](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-ppv.png)
+
 Two important settings are `Unbound` and `Infinite Extent`,
 where we check the box so that the volume works in the entire scene.
+
+![Configure Post Processing Volume 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-unbound.png)
+
+
 Under Exposure, set the Auto-Exposure `Min EV100` and `Max EV100` to `0`.
+
+![Configure Post Processing Volume 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-auto-exposure.png)
+
 The Auto Exposure setting ensures that the brightness remains the same in every scene.
 
 <a name = “create-earth”></a>
@@ -1032,6 +1041,8 @@ Let's create the earth by creating a new blueprint and using the base blueprint.
 For the earth, we use the base material and create an instance of the material to configure the color in the editor.
 We name the instance e.g. `MI_EarthSurface` or `MI_EarthSurface_Inst`.
 We create the instance by right-clicking on the base material and then clicking on `Create Material Instance`.
+
+The color can be set as desired.
 
 We set the scaling of the mesh to `2.61` and the initial speed to `16.7`.
 The mass is set to `1000` and the line color to `FLinearColor(0, 0, 1, 1)`.
