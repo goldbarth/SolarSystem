@@ -1,6 +1,6 @@
 # Solar System Simulation (Unreal Engine 5.3.2)
 
-![Solar System Simulation](https://github.com/goldbarth/SolarSystem/blob/goldbarth/camera-pan.gif "Short Impression")
+![Solar System Simulation](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/gifs/camera-pan.gif "Short Impression")
 
 Multilingual documentation/tutorial for the Solar System Simulation project in Unreal Engine, 
 designed as a practical introduction to C++, game physics, and basic engine concepts.

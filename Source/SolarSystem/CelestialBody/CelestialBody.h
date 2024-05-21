@@ -23,7 +23,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Celestial Body")
 	float Mass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Celestial Body")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Celestial Body")
 	float Radius;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Celestial Body")

@@ -6,13 +6,13 @@
 #include "GameFramework/GameModeBase.h"
 #include "SolarSystem/Orbit/OrbitSimulation.h"
 #include "SolarSystem/Orbit/ACelestialBodyRegistry.h"
-#include "DemoOrbitSimulation_GameMode.generated.h"
+#include "OrbitSimulation_GameMode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SOLARSYSTEM_API ADemoOrbitSimulation_GameMode : public AGameModeBase
+class SOLARSYSTEM_API AOrbitSimulation_GameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
@@ -31,6 +31,6 @@ public:
 	virtual void StartPlay() override;
 	
 private:
-	void InitializeSimulation();
+	void Initialize();
 	
 };

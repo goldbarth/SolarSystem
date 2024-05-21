@@ -39,5 +39,5 @@ private:
 
 	FVector CalculateGravitationalAcceleration(const FVector& OtherPosition, const ACelestialBody* Object) const;
 	
-	void GetCelestialObjectManager();
+	void GetCelestialBodyRegistry();
 };

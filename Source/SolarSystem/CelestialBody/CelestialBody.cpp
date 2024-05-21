@@ -2,7 +2,7 @@
 
 #include "CelestialBody.h"
 
-#include "SolarSystem/GameModes/DemoOrbitSimulation_GameMode.h"
+#include "SolarSystem/GameModes/OrbitSimulation_GameMode.h"
 #include "SolarSystem/Orbit/ACelestialBodyRegistry.h"
 #include "SolarSystem/Structs/Universe.h"
 #include "../Defines/Debug.h"
@@ -58,7 +58,7 @@ void ACelestialBody::MassCalculation()
 
 void ACelestialBody::AddBodyToRegistry()
 {
-	ADemoOrbitSimulation_GameMode* GameMode = Cast<ADemoOrbitSimulation_GameMode>(GetWorld()->GetAuthGameMode());
+	AOrbitSimulation_GameMode* GameMode = Cast<AOrbitSimulation_GameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode)
 	{
 		ACelestialBodyRegistry* Registry = GameMode->GetCelestialBodyRegistry();

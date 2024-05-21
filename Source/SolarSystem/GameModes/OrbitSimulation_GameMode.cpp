@@ -1,18 +1,18 @@
 ﻿// Author (c) 2024 Felix Wahl (https://github.com/goldbarth). Provided under the MIT License. Full text: https://opensource.org/licenses/MIT
 
 
-#include "DemoOrbitSimulation_GameMode.h"
+#include "OrbitSimulation_GameMode.h"
 
 #include "../Defines/Debug.h"
 
-void ADemoOrbitSimulation_GameMode::StartPlay()
+void AOrbitSimulation_GameMode::StartPlay()
 {
 	Super::StartPlay();
 	
-	InitializeSimulation();
+	Initialize();
 }
 
-void ADemoOrbitSimulation_GameMode::InitializeSimulation()
+void AOrbitSimulation_GameMode::Initialize()
 {
 	UWorld* World = GetWorld();
 	if (World)

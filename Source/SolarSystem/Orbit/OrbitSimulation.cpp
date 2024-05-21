@@ -3,7 +3,7 @@
 
 #include "OrbitSimulation.h"
 
-#include "SolarSystem/GameModes/DemoOrbitSimulation_GameMode.h"
+#include "SolarSystem/GameModes/OrbitSimulation_GameMode.h"
 #include "SolarSystem/Structs/Universe.h"
 #include "ACelestialBodyRegistry.h"
 #include "../Defines/Debug.h"
@@ -18,7 +18,7 @@ void AOrbitSimulation::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetCelestialObjectManager();
+	GetCelestialBodyRegistry();
 }
 
 void AOrbitSimulation::Tick(float DeltaTime)
@@ -73,7 +73,7 @@ void AOrbitSimulation::UpdateAllVelocities(const float& TimeStep) const
  */
 FVector AOrbitSimulation::CalculateGravitationalAcceleration(const FVector& OtherPosition, const ACelestialBody* Object) const
 {
-	// If one mass is much larger than the other, it is convenient to take it as observational reference and  define
+	// If one mass is much larger than the other, it is convenient to take it as observational reference and define
 	// it as source of a gravitational field of magnitude and orientation. The larger mass is virtually stationary.
 	// The assumption for the calculation of the gravitational effect is used for smaller objects in the reference system.
 	// The smaller mass moves under the influence of the gravitational field of the larger mass.
@@ -105,15 +105,15 @@ FVector AOrbitSimulation::CalculateGravitationalAcceleration(const FVector& Othe
 	return Acceleration;
 }
 
-void AOrbitSimulation::GetCelestialObjectManager()
+void AOrbitSimulation::GetCelestialBodyRegistry()
 {
-	ADemoOrbitSimulation_GameMode* GameMode = Cast<ADemoOrbitSimulation_GameMode>(GetWorld()->GetAuthGameMode());
+	AOrbitSimulation_GameMode* GameMode = Cast<AOrbitSimulation_GameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode)
 	{
 		CelestialBodyRegistry = GameMode->GetCelestialBodyRegistry();
 		if (!CelestialBodyRegistry)
 		{
-			LOG_DISPLAY("Something went wrong! Failed to create CelestialObjectManager! In Orbit Simulation!")
+			LOG_DISPLAY("Something went wrong! Failed to create CelestialBodyRegistry! In Orbit Simulation!")
 		}
 	}
 	else
