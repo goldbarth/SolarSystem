@@ -34,6 +34,10 @@ Disclaimer: The project is a work in progress and may be subject to changes and 
       - [Adding the celestial bodies](#adding-the-celestial-bodies)
         - [Creating the base blueprint](#creating-the-base-blueprint)
         - [Creating the base material](#creating-the-base-material)
+        - [Create celestial bodies](#create-celestial-bodies)
+          - [Create the sun](#create-the-sun)
+          - [Add post-processing effects](#add-post-processing-effects)
+          - [Create the earth](#create-the-earth)
 - [Resources](#resources)
 
 <a name="introduction"></a>
@@ -970,7 +974,8 @@ We need at least two celestial bodies to start the simulation and calculate the 
 ##### *Create the Sun:*
 
 Let's start with the sun by creating a new blueprint and using the base blueprint.
-To do this, we create a new blueprint by right-clicking on the 'Blueprints' folder and then clicking on 'Blueprint Class'.
+To do this,
+we create a new blueprint by right-clicking on the `Blueprints` folder and then clicking on `Blueprint Class`.
 We search for `BP_CelestialBodyBase` and select the class as Parent Class.
 
 ![Create Sun Blueprint](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/bp-sun1.png)
@@ -1007,7 +1012,7 @@ For the sun we set the line color to `FLinearColor(1, 1, 0, 1)` to visualize the
 ![Configure Sun 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/bp-sun3.png)
 
 Finally,
-place the sun in the editor by dragging it into the scene and setting the position in the Details panel to '0, 0, 0'.
+place the sun in the editor by dragging it into the scene and setting the position in the Details panel to `0, 0, 0`.
 This way the sun is in the center of the scene, and the orbits of the celestial bodies are calculated around the sun.
 
 <a name = “add-post-processing-effects”></a>
@@ -1016,7 +1021,9 @@ This way the sun is in the center of the scene, and the orbits of the celestial 
 What is noticeable now is that the sun is only shining very faintly.
 This is because we have not yet added any post-processing effects.
 
-To do this, we create a new post-processing volume by clicking on the plus symbol in the editor via 'Volume' and then 'Post-Processing Volume'.
+To do this,
+we create a new post-processing volume
+by clicking on the plus symbol in the editor via `Volume` and then `Post-Processing Volume`.
 The volume is automatically added to the scene, and we can configure the settings in the Details Panel.
 
 ![Add Post Processing Volume](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-ppv.png)
@@ -1033,8 +1040,8 @@ Under Exposure, set the Auto-Exposure `Min EV100` and `Max EV100` to `0`.
 
 The Auto Exposure setting ensures that the brightness remains the same in every scene.
 
-<a name = “create-earth”></a>
-##### *Create Earth:*
+<a name = “create-the-earth”></a>
+##### *Create the Earth:*
 
 Let's create the earth by creating a new blueprint and using the base blueprint.
 
