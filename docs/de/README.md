@@ -27,6 +27,17 @@ Hinweis: Das Projekt ist in laufender Entwicklung und kann Änderungen und Aktua
     - [OrbitSimulation Klasse](#orbitsimulation-klasse)
       - [Properties](#orbitsimulation-properties)
       - [Funktionen](#orbitsimulation-funktionen)
+      - [Erweiterung der Game-Mode Klasse](#erweiterung-der-game-mode-klasse)
+    - [Erstellen der Simulation](#erstellen-der-simulation)
+      - [Level erstellen](#level-erstellen)
+      - [GameMode hinzufügen](#gamemode-hinzufügen)
+      - [Himmelskörper hinzufügen](#die-himmelskörper-hinzufügen)
+        - [Basis Blueprint erstellen](#basis-blueprint-erstellen)
+        - [Basis Material erstellen](#basis-material-erstellen)
+        - [Himmelskörper erstellen](#himmelskörper-erstellen)
+          - [Sonne erstellen](#sonne-erstellen)
+          - [Post-Processing-Effekte hinzufügen](#post-processing-effekte-hinzufügen)
+          - [Erde erstellen](#erde-erstellen)
 - [Einsatzmittel](#einsatzmittel)
 
 <a name="einführung"></a>
@@ -126,7 +137,8 @@ Wir benötigen folgende Properties:
 - Masse
 - Radius
 - Initialgeschwindigkeit
-- Aktuelle Geschwindigkeit
+- Aktuelle Geschwindigkeit und 
+- Linien Farbe für die Orbit-Visualisierung
 
 Die Properties für die Himmelskörper sollten folgendermaßen aussehen:
 
@@ -137,7 +149,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Celestial Body")
 	float Mass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Celestial Body")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Celestial Body")
 	float Radius;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Celestial Body")
@@ -145,10 +157,17 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Celestial Body")
 	FVector CurrentVelocity;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug Options")
+	mutable FLinearColor LineColor;
 ```
 
-Die Masse, der Radius und die Initialgeschwindigkeit sind im Blueprint editierbar, damit wir die Himmelskörper im Editor konfigurieren können.
+Die Masse und die Initialgeschwindigkeit sind im Blueprint editierbar, damit wir die Himmelskörper im Editor konfigurieren können.
 Die aktuelle Geschwindigkeit ist nur lesbar, da sie sich während der Simulation ändert.
+Der Radius ist nur lesbar, da er sich aus der Größe der Mesh-Komponente ergibt.
+
+Die Linienfarbe ist im Blueprint editierbar, um die Orbits zu visualisieren.
+Außerdem ist sie mutable, damit sie in einer const-Funktion geändert werden kann.
 
 Außerdem brauchen wir noch eine Mesh-Komponente, um den Himmelskörper im Editor sichtbar zu machen und die Physiksimulation zu ermöglichen, 
 in dem wir die Mesh-Komponenten Masse setzen und den Radius der Komponente bekommen.
@@ -298,8 +317,10 @@ void ACelestialBody::BeginPlay()
 }
 ```
 
+------------------------------------------------------------------------------------------------------------
+
 <a name="gravitationskonstante"></a>
-##### Gravitationskonstante:
+##### Gravitationskonstante
 
 <sup>*</sup> Die Gravitationskonstante `G` und die Struktur `FUniverse` definieren wir in der neu erstellten Header-Datei `Universe.h`.
 
@@ -564,7 +585,7 @@ Jetzt können wir die GameMode-Klasse verwenden, um die Simulation zu steuern un
 
 
 <a name="erweiterung-celestialbody-klasse"></a>
-##### Erweiterung der CelestialBody Klasse:
+##### Erweiterung der CelestialBody Klasse
 
 Um die Himmelskörper in der Simulation zu verwenden, müssen wir die `CelestialBody`-Klasse erweitern, um die Registrierung und Verwaltung der Himmelskörper zu ermöglichen.
 
@@ -709,7 +730,7 @@ private:
 
 	FVector CalculateGravitationalAcceleration(const FVector& OtherPosition, const ACelestialBody* Object) const;
 	
-	void GetCelestialObjectManager();
+	void GetCelestialObjectRegistry();
 ```
 
 Die Implementierung der Update-Funktionen sollte in der Quelldatei `OrbitSimulation.cpp` wie folgt aussehen:
@@ -724,7 +745,7 @@ void AOrbitSimulation::UpdateAllObjects(const float& TimeStep) const
 	}
 	else
 	{
-		LOG_DISPLAY("CelestialObjectManager is nullptr! In Orbit Simulation!");
+		UE_LOG(LogTemp, error, TEXT("CelestialObjectManager is nullptr! In Orbit Simulation!");
 	}
 	
 }
@@ -788,20 +809,20 @@ Dazu wird die Gravitationskonstante `G`, die Masse `M`, die Distanz `R` und die 
 
 Die Gravitationsbeschleunigung wird für jeden Himmelskörper berechnet und aufsummiert, um die Gesamtbeschleunigung zu erhalten.
 
-Als Nächstes fügen wir die Funktion `GetCelestialObjectManager` hinzu, um die `CelestialBodyRegistry` zu erhalten und zu initialisieren.
+Als Nächstes fügen wir die Funktion `GetCelestialBodyRegistry` hinzu, um die `CelestialBodyRegistry` zu erhalten und zu initialisieren.
 
 Die Implementierung der Funktion sollte in der Quelldatei `OrbitSimulation.cpp` wie folgt aussehen:
 
 ```cpp
-void AOrbitSimulation::GetCelestialObjectManager()
+void AOrbitSimulation::GetCelestialBodyRegistry()
 {
-	ADemoOrbitSimulation_GameMode* GameMode = Cast<ADemoOrbitSimulation_GameMode>(GetWorld()->GetAuthGameMode());
+	AOrbitSimulation_GameMode* GameMode = Cast<AOrbitSimulation_GameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode)
 	{
 		CelestialBodyRegistry = GameMode->GetCelestialBodyRegistry();
 		if (!CelestialBodyRegistry)
 		{
-			UE_LOG(LogTemp, Display, TEXT("Something went wrong! Failed to create CelestialObjectManager! In Orbit Simulation!")
+			UE_LOG(LogTemp, Display, TEXT("Something went wrong! Failed to create CelestialBodyRegistry! In Orbit Simulation!")
 		}
 	}
 	else
@@ -822,7 +843,7 @@ void AOrbitSimulation::BeginPlay()
 {
     Super::BeginPlay();
     
-    GetCelestialObjectManager();
+    GetCelestialObjectRegistry();
 }
 ```
 
@@ -845,7 +866,197 @@ Die Konstante `FUniverse::TimeStep` wird als Zeitintervall für die Simulation v
 
 Durch das Setzten der skalierbaren DeltaTime kann die Simulation gesteuert werden, um die Geschwindigkeit der Simulation zu erhöhen oder zu verringern.
 
-Jetzt können wir die Simulation starten und die Orbits der Himmelskörper berechnen.
+Jetzt können wir die Orbits der Himmelskörper berechnen und daraus eine Simulation erstellen.
+
+<a name="erweiterung-der-game-mode-klasse"></a>
+### Erweiterung der Game-Mode Klasse
+
+Um die Simulation zu starten und die Himmelskörper zu registrieren und zu verwalten, müssen wir die GameMode-Klasse erweitern.
+
+Die Implementierung der Funktion sollte in der Quelldatei `OrbitSimulation_GameMode.cpp` wie folgt aussehen:
+
+```cpp
+void AOrbitSimulation_GameMode::Initialize()
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		CelestialBodyRegistry = World->SpawnActor<ACelestialBodyRegistry>();
+		if (!CelestialBodyRegistry)
+		{
+			UE_LOG(LogTemp, error, TEXT("Failed to create CelestialBodyRegistry! (OrbitSimulation_GameMode)")
+		}
+		else
+		{
+			UE_LOG(LogTemp, display, TEXT("Created CelestialBodyRegistry! (OrbitSimulation_GameMode)")
+		}
+		OrbitSimulation = World->SpawnActor<AOrbitSimulation>();
+		if (!OrbitSimulation)
+		{
+			UE_LOG(LogTemp, error, TEXT("Failed to create OrbitSimulation! (OrbitSimulation_GameMode)")
+		}
+		else
+		{
+			UE_LOG(LogTemp, display, TEXT("Created OrbitSimulation! (OrbitSimulation_GameMode)")
+		}
+	}
+}
+```
+
+Wir fügen die `OrbitSimulation`-Property hinzu, um die Simulation zu steuern und die Orbits zu berechnen.
+
+------------------------------------------------------------------------------------------------------------
+
+<a name="erstellen-der-simulation"></a>
+## Erstellen der Simulation
+
+<a name="level-erstellen"></a>
+### Level erstellen:
+
+In der Engine im Content Browser erstellen wir einen Ordner `Maps`.
+In dem Ordner erstellen wir eine neue Level-Datei, z.B. `SolarSystemSimulation`, in dem wir mit Rechtsklick auf den Ordner `Maps` und dann auf `Level` klicken.
+
+![Level erstellen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/create-level.png)
+
+<a name = "gamemode-hinzufügen"></a>
+##### *GameMode hinzufügen:*
+
+Den GameMode können wir in den World Settings des Levels setzen, um die Simulation zu starten und die Himmelskörper zu registrieren und zu verwalten.
+
+![GameMode hinzufügen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-game-mode.png)
+
+<a name = "die-himmelskoerper-hinzufügen"></a>
+### Die Himmelskörper hinzufügen
+
+Um die Himmelskörper in der Simulation zu verwenden, brauchen wir ein Basis-Blueprint und Material für die Himmelskörper.
+
+<a name = "basis-blueprint-erstellen"></a>
+##### *Basis Blueprint erstellen:*
+
+Erstellen wir ein Basis-Blueprint für die Himmelskörper, indem wir mit Rechtsklick auf den Ordner `Blueprints` den wir vorher erstellen und dann auf `Blueprint Class` klicken.
+
+![Basis Blueprint erstellen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/bp-base1.png)
+
+Wir suchen nach `CelestialBody` und wählen die Klasse als Parent Class aus.
+Wir benennen die Klasse z.B. `BP_CelestialBodyBase`.
+
+![Suche CelestialBody](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/bp-base2.png)
+
+Als Static Mesh für die Himmelskörper verwenden wir eine Sphere, die wir im Editor erstellen und als Static Mesh für den Himmelskörper setzen.
+Im Details Panel unter Physics aktivieren wir `Simulate Physics` und `Mass (kg)`, die Masse wird automatisch beim Start der Simulation berechnet.
+Zuletzt deaktivieren wir `Enable Gravity` da wir unsere eigene Gravitationssimulation verwenden.
+
+![Basis Blueprint konfigurieren](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/bp-base3.png)
+
+So müssen wir nicht für jeden Himmelskörper ein neues Blueprint erstellen, sondern können das Basis Blueprint verwenden und die Eigenschaften im Editor konfigurieren.
+
+<a name = "basis-material-erstellen"></a>
+##### *Basis Material erstellen:*
+
+Erstellen wir ein Basis-Material für die Himmelskörper, indem wir mit Rechtsklick auf den Ordner `Materials` den wir vorher erstellen und dann auf `Material` klicken.
+Wir benennen das Material z.B. `M_CelestialBodySurfaceBase`.
+
+![Basis Material erstellen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/m-base1.png)
+
+Dem Material fügen wir drei Parameter als absolute Basis hinzu:
+- `Base Color`
+- `Metallic`
+- `Roughness`
+
+![Basis Material konfigurieren](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/m-base2.png)
+
+Das Material wird als Basis für die Himmelskörper verwendet und kann als Instanz für die Himmelskörper im Editor konfiguriert werden.
+
+Hinweis: Es können später auch weitere Parameter hinzugefügt bzw. getauscht werden, um die Oberfläche der Himmelskörper zu konfigurieren und Texturen hinzuzufügen.
+
+<a name = "himmelskoerper-erstellen"></a>
+#### *Himmelskörper erstellen:*
+
+Erstellen wir die Himmelskörper im Editor, indem wir das Basis-Blueprint und das Basis-Material verwenden.
+Wir brauchen mindestens zwei Himmelskörper, um die Simulation zu starten und die Orbits zu berechnen.
+
+<a name = "sonne-erstellen"></a>
+##### *Sonne erstellen:*
+
+Fangen wir mit der Sonne an, indem wir ein neues Blueprint erstellen und das Basis-Blueprint verwenden.
+Dazu erstellen wir ein neues Blueprint, indem wir mit Rechtsklick auf den Ordner `Blueprints` und dann auf `Blueprint Class` klicken.
+Wir suchen nach `BP_CelestialBodyBase` und wählen die Klasse als Parent Class aus.
+
+![Sonne Blueprint erstellen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/bp-sun1.png)
+
+Wir benennen das Blueprint z.B. `BP_Sun`.
+
+Für die Sonne brauchen wir noch ein anderes Material, das wir im Editor erstellen und als Material für die Sonne setzen.
+Wir benennen das Material z.B. `M_SunSurface`.
+
+Das Material braucht nur ein Parameter: 
+- `Emissive Color`.
+
+![Sonne Material erstellen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/m-sun1.png)
+
+Die Farbe kann nach Belieben eingestellt werden, sollte aber den V-Wert vom HSV-Farbraum auf 10 setzen, damit die Sonne leuchtet.
+Außerdem erstellen wir noch eine Instanz des Materials, um die Farbe im Editor zu konfigurieren.
+Wir benennen die Instanz z.B. `MI_SunSurface` oder `MI_SunSurface_Inst`.
+
+Die Instanz erstellen wir, indem wir mit Rechtsklick auf das Basis-Material und dann auf `Create Material Instance` klicken.
+
+![Sonne Material Instanz erstellen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/m-sun2.png)
+![Sonne Material Instanz](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/m-sun3.png)
+![Sonne Material Instanz konfigurieren](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/m-sun4.png)
+
+Die Skalierung des Meshes setzten wir auf `284,84`, als Material die Instanz von dem gerade erstellten Material.
+
+![Sonne konfigurieren 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/bp-sun2.png)
+
+Die Masse (Wichtig: in den Celestial Body und nicht in den Physics Einstellungen) auf `332.946.000` 
+und die Initialgeschwindigkeit auf `0`.
+
+Für die Sonne setzen wir die Linienfarbe auf `FLinearColor(1, 1, 0, 1)` um die Orbits zu visualisieren.
+
+![Sonne konfigurieren 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/bp-sun3.png)
+
+Zum Schluss platziere die Sonne im Editor, in dem wir sie in die Szene ziehen und die Position im Details Panel auf `0, 0, 0` setzen.
+So ist die Sonne im Zentrum der Szene und die Orbits der Himmelskörper werden um die Sonne berechnet.
+
+<a name = "post-processing-effekte-hinzufügen"></a>
+##### *Post-Processing Effekte hinzufügen:*
+
+Was jetzt auffällt ist, dass die Sonne nur sehr schwach leuchtet.
+Das liegt daran, dass wir noch keine Post-Processing Effekte hinzugefügt haben.
+
+Dazu erstellen wir ein neues Post-Processing Volume, indem wir über das Plus-Symbol im Editor über `Volume` und dann `Post-Processing Volume` klicken.
+Das Volume wird automatisch in die Szene hinzugefügt und wir können die Einstellungen im Details Panel konfigurieren.
+
+![Post-Processing Volume hinzufügen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-ppv.png)
+
+Zwei wichtige Einstellungen sind `Unbound` bzw. `Infinite Extent`, da setzen wir den Haken, damit das Volume in der ganzen Szene wirkt.
+
+![Post-Processing Volume konfigurieren 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-unbound.png)
+
+Unter Exposure die Auto-Exposure `Min EV100` und `Max EV100` auf `0` setzen.
+
+![Post-Processing Volume konfigurieren 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-auto-exposure.png)
+
+Die eingestellte Auto-Exposure sorgt dafür, dass die Helligkeit in jeder Szenerie gleich bleibt. 
+
+<a name = "erde-erstellen"></a>
+##### *Erde erstellen:*
+
+Erstellen wir die Erde, indem wir ein neues Blueprint erstellen und das Basis-Blueprint verwenden.
+
+Für die Erde verwenden wir das Basis-Material und erstellen eine Instanz des Materials, um die Farbe im Editor zu konfigurieren.
+Wir benennen die Instanz z.B. `MI_EarthSurface` oder `MI_EarthSurface_Inst`.
+Die Instanz erstellen wir, indem wir mit Rechtsklick auf das Basis-Material und dann auf `Create Material Instance` klicken.
+
+Die Farbe kann nach Belieben eingestellt werden.
+
+die Skalierung des Meshes setzen wir auf `2,61` und die Initialgeschwindigkeit auf `16,7`.
+Die wird auf `1000` gesetzt und die Linienfarbe auf `FLinearColor(0, 0, 1, 1)`.
+
+Zum Schluss,
+platzieren wir die Erde im Editor, indem wir sie in die Szene ziehen und die Position im Details Panel auf `0, 114242, 0` setzen.
+
+![Erde positionieren](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/bp-earth-location.png)
 
 
 ------------------------------------------------------------------------------------------------------------
@@ -854,3 +1065,5 @@ Jetzt können wir die Simulation starten und die Orbits der Himmelskörper berec
 
 - Unreal Engine 5.3.2
 - Visual Studio 2022, JetBrains Rider oder ein anderer IDE mit C++ Unterstützung
+
+- Berechnungen der Eigenschaften von Himmelskörpern und Orbits: [Modell-Kalkulationen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/docs/calc/README.md)
