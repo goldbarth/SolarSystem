@@ -11,33 +11,35 @@ Disclaimer: The project is a work in progress and may be subject to changes and 
 - [Features](#features)
 - [Introduction](#introduction)
 - [Getting Started](#getting-started)
-  - [Implement basic classes](#implement-basic-classes) 
-    - [CelestialBody class](#celestialbody-class)
-      - [Properties](#celestialbody-properties)
-      - [Mesh Initialization](#mesh-initialization)
-      - [Getter and setter functions](#getter-and-setter-functions)
-      - [Physics functions](#physics-functions)
-      - [Gravitational constant / Universe struct](#gravitational-constant)
-    - [CelestialBodyRegistry class](#celestialbodyregistry-class)
-      - [Delegate](#celestialbodyregistry-delegate)
-      - [Properties](#celestialbodyregistry-properties)
-      - [Functions](#celestialbodyregistry-functions)
-    - [Game-Mode class](#game-mode-class)
-      - [Expanding the CelestialBody class](#expanding-the-celestialbody-class)
-    - [OrbitSimulation class](#orbitsimulation-class)
-      - [Properties](#orbitsimulation-properties)
-      - [Functions](#orbitsimulation-functions)
-      - [Expanding the game-mode class](#expanding-the-game-mode-class)
-    - [Creating the Simulation](#creating-the-simulation)
-      - [Creating the level](#creating-the-level)
-      - [Adding the game-mode](#adding-the-game-mode)
-      - [Adding the celestial bodies](#adding-the-celestial-bodies)
-        - [Creating the base blueprint](#creating-the-base-blueprint)
-        - [Creating the base material](#creating-the-base-material)
-        - [Create celestial bodies](#create-celestial-bodies)
-          - [Create the sun](#create-the-sun)
-          - [Add post-processing effects](#add-post-processing-effects)
-          - [Create the earth](#create-the-earth)
+- [Implement basic classes](#implement-basic-classes) 
+  - [CelestialBody class](#celestialbody-class)
+    - [Properties](#celestialbody-properties)
+    - [Mesh Initialization](#mesh-initialization)
+    - [Getter and setter functions](#getter-and-setter-functions)
+    - [Physics functions](#physics-functions)
+    - [Gravitational constant / Universe struct](#gravitational-constant)
+  - [CelestialBodyRegistry class](#celestialbodyregistry-class)
+    - [Delegate](#celestialbodyregistry-delegate)
+    - [Properties](#celestialbodyregistry-properties)
+    - [Functions](#celestialbodyregistry-functions)
+  - [Game-Mode class](#game-mode-class)
+    - [Expanding the CelestialBody class](#expanding-the-celestialbody-class)
+  - [OrbitSimulation class](#orbitsimulation-class)
+    - [Properties](#orbitsimulation-properties)
+    - [Functions](#orbitsimulation-functions)
+    - [Expanding the game-mode class](#expanding-the-game-mode-class)
+  - [Creating the Simulation](#creating-the-simulation)
+    - [Creating the level](#creating-the-level)
+    - [Adding the game-mode](#adding-the-game-mode)
+    - [Add post-processing effects](#add-post-processing-effects)
+    - [Adding the celestial bodies](#adding-the-celestial-bodies)
+      - [Creating the base blueprint](#creating-the-base-blueprint)
+      - [Creating the base material](#creating-the-base-material)
+      - [Create celestial bodies](#create-celestial-bodies)
+        - [Create the sun](#create-the-sun)
+        - [Create the earth](#create-the-earth)
+    - [Starting the simulation](#starting-the-simulation)
+      - [Configure the Simulation](#configure-the-simulation) 
 - [Resources](#resources)
 
 <a name="introduction"></a>
@@ -791,7 +793,7 @@ the mass and the position of the celestial bodies.
 For this purpose, the gravitational constant `G`, the mass `M`,
 the distance `R` and the distance squares `SqrR` are calculated to determine the gravitational acceleration.
 
-The gravitational acceleration is calculated for each celestial body and summed to obtain the total acceleration.
+The gravitational acceleration is calculated for each celestial body and summed to get the total acceleration.
 
 Next, we add the function `GetCelestialObjectRegistry` to get and initialize the `CelestialBodyRegistry`.
 
@@ -896,7 +898,7 @@ We add the `OrbitSimulation` property to control the simulation and calculate th
 ## Creating the Simulation
 
 <a name="creating-the-level"></a>
-### Creating the Level
+#### Creating the Level
 
 In the engine in the Content Browser, we create a folder called `Maps`.
 In the folder, we create a new level file,
@@ -912,13 +914,40 @@ to start the simulation and to register and manage the celestial bodies.
 
 ![Adding the Game-Mode](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-game-mode.png)
 
+
+<a name = “add-post-processing-effects”></a>
+##### *Add post-processing effects:*
+
+What is noticeable now is that the sun is only shining very faintly.
+This is because we have not yet added any post-processing effects.
+
+To do this,
+we create a new post-processing volume
+by clicking on the plus symbol in the editor via `Volume` and then `Post-Processing Volume`.
+The volume is automatically added to the scene, and we can configure the settings in the Details Panel.
+
+![Add Post Processing Volume](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-ppv.png)
+
+Two important settings are `Unbound` and `Infinite Extent`,
+where we check the box so that the volume works in the entire scene.
+
+![Configure Post Processing Volume 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-unbound.png)
+
+
+Under Exposure, set the Auto-Exposure `Min EV100` and `Max EV100` to `0`.
+
+![Configure Post Processing Volume 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-auto-exposure.png)
+
+The Auto Exposure setting ensures that the brightness remains the same in every scene.
+
+
 <a name="adding-the-celestial-bodies"></a>
-### Adding the Celestial Bodies
+#### Adding the Celestial Bodies
 
 To use the celestial bodies in the simulation, we need a basic blueprint and material for the celestial bodies.
 
 <a name="creating-the-base-blueprint"></a>
-##### *Creating the Base Blueprint:*
+###### *Creating the Base Blueprint:*
 
 Let's create a base blueprint for the celestial bodies
 by right-clicking on the Blueprints folder we created earlier and then clicking on Blueprint Class.
@@ -942,7 +971,7 @@ This means that we do not have to create a new blueprint for each celestial body
 but can use the basic blueprint and configure the properties in the editor.
 
 <a name="creating-the-base-material"></a>
-##### *Creating the Base Material:*
+###### *Creating the Base Material:*
 
 Let's
 create a base material for the celestial bodies
@@ -965,7 +994,7 @@ Additional parameters can also be added
 or exchanged later to configure the surface of the celestial bodies and add textures.
 
 <a name="create-celestial-bodies"></a>
-#### *Create Celestial Bodies:*
+### *Create Celestial Bodies:*
 
 Let's create the celestial bodies in the editor using the base blueprint and the base material.
 We need at least two celestial bodies to start the simulation and calculate the orbits.
@@ -1015,30 +1044,6 @@ Finally,
 place the sun in the editor by dragging it into the scene and setting the position in the Details panel to `0, 0, 0`.
 This way the sun is in the center of the scene, and the orbits of the celestial bodies are calculated around the sun.
 
-<a name = “add-post-processing-effects”></a>
-##### *Add post-processing effects:*
-
-What is noticeable now is that the sun is only shining very faintly.
-This is because we have not yet added any post-processing effects.
-
-To do this,
-we create a new post-processing volume
-by clicking on the plus symbol in the editor via `Volume` and then `Post-Processing Volume`.
-The volume is automatically added to the scene, and we can configure the settings in the Details Panel.
-
-![Add Post Processing Volume](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-ppv.png)
-
-Two important settings are `Unbound` and `Infinite Extent`,
-where we check the box so that the volume works in the entire scene.
-
-![Configure Post Processing Volume 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-unbound.png)
-
-
-Under Exposure, set the Auto-Exposure `Min EV100` and `Max EV100` to `0`.
-
-![Configure Post Processing Volume 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-auto-exposure.png)
-
-The Auto Exposure setting ensures that the brightness remains the same in every scene.
 
 <a name = “create-the-earth”></a>
 ##### *Create the Earth:*
@@ -1060,6 +1065,36 @@ and setting the position in the details panel to `0, 114242, 0`.
 
 ![Earth localization](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/bp-earth-location.png)
 
+Note:
+The position,
+mass and initial speed of the earth are important so that the orbits of the celestial bodies are calculated correctly.
+The property calculations can be found under `Resources`.
+
+------------------------------------------------------------------------------------------------------------
+
+<a name="starting-the-simulation"></a>
+### *Starting the Simulation:*
+
+If we now start the simulation, the celestial bodies should circle around the sun and the orbits should be calculated.
+As the speed of the simulation depends on the time scale, we can start, stop and accelerate the simulation.
+
+<a name="configure-the-simulation"></a>
+#### Configure the Simulation:
+
+At the moment, the only way to change the time scale and properties of the celestial bodies is to 
+configure the values in the editor when the simulation is running.
+
+We can do this by starting the simulation in the editor and selecting the `OrbitSimulation` instance in the outliner panel.
+![Configure simulation 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/sim-config1.png)
+
+In the Details Panel under Physics we can set the `Manual Time Scale` property to `true`.
+![Configure Simulation 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/sim-config2.png)
+
+We can set the `Time Scale` to a higher value to speed up the simulation or set it to a lower value to slow down the simulation.
+![Configure simulation 3](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/sim-config3.png)
+
+
+
 
 ------------------------------------------------------------------------------------------------------------
 <a name="resources"></a>
@@ -1068,4 +1103,4 @@ and setting the position in the details panel to `0, 114242, 0`.
 - Unreal Engine 5.3.2
 - Visual Studio 2022, JetBrains Rider, or another IDE with C++ support
 
-- Calculating the properties of celestial bodies and the orbits: [Model-Calculations](https://github.com/goldbarth/SolarSystem/blob/goldbarth/docs/calc/README.md)
+- Calculations of the properties of celestial bodies and orbits: [Model-Calculations](https://github.com/goldbarth/SolarSystem/blob/goldbarth/docs/calc/README.md)

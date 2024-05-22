@@ -11,33 +11,33 @@ Hinweis: Das Projekt ist in laufender Entwicklung und kann Änderungen und Aktua
 - [Einführung](#einführung)
 - [Eigenschaften](#eigenschaften)
 - [Erste Schritte](#erste-schritte)
-  - [Grundlegende Klassen Implementieren](#grundlegende-klassen-implementieren)
-    - [CelestialBody Klasse](#celestialbody-klasse)
-      - [Properties](#celestialbody-properties)
-      - [Mesh Initialisierung](#mesh-initialisierung)
-      - [Getter- und Setter-Funktionen](#getter--und-setter-funktionen)
-      - [Physikfunktionen](#physikfunktionen)
-      - [Gravitationskonstante / Universe Struktur](#gravitationskonstante)
-    - [CelestialBodyRegistry Klasse](#celestialbodyregistry-klasse)
-      - [Delegaten](#celestialbodyregistry-delegaten)
-      - [Properties](#celestialbodyregistry-properties)
-      - [Funktionen](#celestialbodyregistry-funktionen)
-    - [Game-Mode Klasse](#game-mode-klasse)
-      - [Erweiterung der CelestialBody Klasse](#erweiterung-der-celestialbody-klasse)
-    - [OrbitSimulation Klasse](#orbitsimulation-klasse)
-      - [Properties](#orbitsimulation-properties)
-      - [Funktionen](#orbitsimulation-funktionen)
-      - [Erweiterung der Game-Mode Klasse](#erweiterung-der-game-mode-klasse)
-    - [Erstellen der Simulation](#erstellen-der-simulation)
-      - [Level erstellen](#level-erstellen)
-      - [GameMode hinzufügen](#gamemode-hinzufügen)
-      - [Himmelskörper hinzufügen](#die-himmelskörper-hinzufügen)
-        - [Basis Blueprint erstellen](#basis-blueprint-erstellen)
-        - [Basis Material erstellen](#basis-material-erstellen)
-        - [Himmelskörper erstellen](#himmelskörper-erstellen)
-          - [Sonne erstellen](#sonne-erstellen)
-          - [Post-Processing-Effekte hinzufügen](#post-processing-effekte-hinzufügen)
-          - [Erde erstellen](#erde-erstellen)
+- [Grundlegende Klassen Implementieren](#grundlegende-klassen-implementieren)
+  - [CelestialBody Klasse](#celestialbody-klasse)
+    - [Properties](#celestialbody-properties)
+    - [Mesh Initialisierung](#mesh-initialisierung)
+    - [Getter- und Setter-Funktionen](#getter--und-setter-funktionen)
+    - [Physikfunktionen](#physikfunktionen)
+    - [Gravitationskonstante / Universe Struktur](#gravitationskonstante)
+  - [CelestialBodyRegistry Klasse](#celestialbodyregistry-klasse)
+    - [Delegaten](#celestialbodyregistry-delegaten)
+    - [Properties](#celestialbodyregistry-properties)
+    - [Funktionen](#celestialbodyregistry-funktionen)
+  - [Game-Mode Klasse](#game-mode-klasse)
+    - [Erweiterung der CelestialBody Klasse](#erweiterung-der-celestialbody-klasse)
+  - [OrbitSimulation Klasse](#orbitsimulation-klasse)
+    - [Properties](#orbitsimulation-properties)
+    - [Funktionen](#orbitsimulation-funktionen)
+    - [Erweiterung der Game-Mode Klasse](#erweiterung-der-game-mode-klasse)
+- [Erstellen der Simulation](#erstellen-der-simulation)
+  - [Level erstellen](#level-erstellen)
+  - [GameMode hinzufügen](#gamemode-hinzufügen)
+  - [Post-Processing-Effekte hinzufügen](#post-processing-effekte-hinzufügen)
+  - [Himmelskörper hinzufügen](#die-himmelskörper-hinzufügen)
+    - [Basis Blueprint erstellen](#basis-blueprint-erstellen)
+    - [Basis Material erstellen](#basis-material-erstellen)
+    - [Himmelskörper erstellen](#himmelskörper-erstellen)
+      - [Sonne erstellen](#sonne-erstellen)
+      - [Erde erstellen](#erde-erstellen)
 - [Einsatzmittel](#einsatzmittel)
 
 <a name="einführung"></a>
@@ -869,7 +869,7 @@ Durch das Setzten der skalierbaren DeltaTime kann die Simulation gesteuert werde
 Jetzt können wir die Orbits der Himmelskörper berechnen und daraus eine Simulation erstellen.
 
 <a name="erweiterung-der-game-mode-klasse"></a>
-### Erweiterung der Game-Mode Klasse
+#### Erweiterung der Game-Mode Klasse
 
 Um die Simulation zu starten und die Himmelskörper zu registrieren und zu verwalten, müssen wir die GameMode-Klasse erweitern.
 
@@ -911,7 +911,7 @@ Wir fügen die `OrbitSimulation`-Property hinzu, um die Simulation zu steuern un
 ## Erstellen der Simulation
 
 <a name="level-erstellen"></a>
-### Level erstellen:
+#### Level erstellen:
 
 In der Engine im Content Browser erstellen wir einen Ordner `Maps`.
 In dem Ordner erstellen wir eine neue Level-Datei, z.B. `SolarSystemSimulation`, in dem wir mit Rechtsklick auf den Ordner `Maps` und dann auf `Level` klicken.
@@ -925,13 +925,35 @@ Den GameMode können wir in den World Settings des Levels setzen, um die Simulat
 
 ![GameMode hinzufügen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-game-mode.png)
 
+
+<a name = "post-processing-effekte-hinzufügen"></a>
+##### *Post-Processing Effekte hinzufügen:*
+
+Um die Szene zu verbessern, fügen wir Post-Processing Effekte hinzu, um die Beleuchtung und die Atmosphäre zu verbessern.
+
+Dazu erstellen wir ein neues Post-Processing Volume, indem wir über das Plus-Symbol im Editor über `Volume` und dann `Post-Processing Volume` klicken.
+Das Volume wird automatisch in die Szene hinzugefügt und wir können die Einstellungen im Details Panel konfigurieren.
+
+![Post-Processing Volume hinzufügen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-ppv.png)
+
+Zwei wichtige Einstellungen sind `Unbound` bzw. `Infinite Extent`, da setzen wir den Haken, damit das Volume in der ganzen Szene wirkt.
+
+![Post-Processing Volume konfigurieren 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-unbound.png)
+
+Unter Exposure die Auto-Exposure `Min EV100` und `Max EV100` auf `0` setzen.
+
+![Post-Processing Volume konfigurieren 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-auto-exposure.png)
+
+Die eingestellte Auto-Exposure sorgt dafür, dass die Helligkeit in jeder Szenerie gleich bleibt.
+
+
 <a name = "die-himmelskoerper-hinzufügen"></a>
 ### Die Himmelskörper hinzufügen
 
 Um die Himmelskörper in der Simulation zu verwenden, brauchen wir ein Basis-Blueprint und Material für die Himmelskörper.
 
 <a name = "basis-blueprint-erstellen"></a>
-##### *Basis Blueprint erstellen:*
+###### *Basis Blueprint erstellen:*
 
 Erstellen wir ein Basis-Blueprint für die Himmelskörper, indem wir mit Rechtsklick auf den Ordner `Blueprints` den wir vorher erstellen und dann auf `Blueprint Class` klicken.
 
@@ -951,7 +973,7 @@ Zuletzt deaktivieren wir `Enable Gravity` da wir unsere eigene Gravitationssimul
 So müssen wir nicht für jeden Himmelskörper ein neues Blueprint erstellen, sondern können das Basis Blueprint verwenden und die Eigenschaften im Editor konfigurieren.
 
 <a name = "basis-material-erstellen"></a>
-##### *Basis Material erstellen:*
+###### *Basis Material erstellen:*
 
 Erstellen wir ein Basis-Material für die Himmelskörper, indem wir mit Rechtsklick auf den Ordner `Materials` den wir vorher erstellen und dann auf `Material` klicken.
 Wir benennen das Material z.B. `M_CelestialBodySurfaceBase`.
@@ -1018,27 +1040,6 @@ Für die Sonne setzen wir die Linienfarbe auf `FLinearColor(1, 1, 0, 1)` um die 
 Zum Schluss platziere die Sonne im Editor, in dem wir sie in die Szene ziehen und die Position im Details Panel auf `0, 0, 0` setzen.
 So ist die Sonne im Zentrum der Szene und die Orbits der Himmelskörper werden um die Sonne berechnet.
 
-<a name = "post-processing-effekte-hinzufügen"></a>
-##### *Post-Processing Effekte hinzufügen:*
-
-Was jetzt auffällt ist, dass die Sonne nur sehr schwach leuchtet.
-Das liegt daran, dass wir noch keine Post-Processing Effekte hinzugefügt haben.
-
-Dazu erstellen wir ein neues Post-Processing Volume, indem wir über das Plus-Symbol im Editor über `Volume` und dann `Post-Processing Volume` klicken.
-Das Volume wird automatisch in die Szene hinzugefügt und wir können die Einstellungen im Details Panel konfigurieren.
-
-![Post-Processing Volume hinzufügen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-ppv.png)
-
-Zwei wichtige Einstellungen sind `Unbound` bzw. `Infinite Extent`, da setzen wir den Haken, damit das Volume in der ganzen Szene wirkt.
-
-![Post-Processing Volume konfigurieren 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-unbound.png)
-
-Unter Exposure die Auto-Exposure `Min EV100` und `Max EV100` auf `0` setzen.
-
-![Post-Processing Volume konfigurieren 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-auto-exposure.png)
-
-Die eingestellte Auto-Exposure sorgt dafür, dass die Helligkeit in jeder Szenerie gleich bleibt. 
-
 <a name = "erde-erstellen"></a>
 ##### *Erde erstellen:*
 
@@ -1057,6 +1058,37 @@ Zum Schluss,
 platzieren wir die Erde im Editor, indem wir sie in die Szene ziehen und die Position im Details Panel auf `0, 114242, 0` setzen.
 
 ![Erde positionieren](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/bp-earth-location.png)
+
+Hinweis: Die Position, Masse und Initialgeschwindigkeit der Erde ist wichtig, damit die Orbits der Himmelskörper korrekt berechnet werden.
+Die Eigenschaftsberechnungen können unter `Einsatzmittel` nachgelesen werden.
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+
+<a name = "simulation-starten"></a>
+## Simulation starten
+
+Wenn wir jetzt die Simulation starten, sollten die Himmelskörper um die Sonne kreisen und die Orbits berechnet werden.
+Da die Geschwindigkeit der Simulation von der Zeitskala abhängt, können wir die Simulation starten, stoppen und beschleunigen.
+
+<a name="simulation-konfigurieren"></a>
+#### Simulation konfigurieren
+
+Momentan ist die einzige Möglichkeit die Zeitskala und Eigenschaften der Himmelskörper zu ändern, 
+die Werte im Editor zu konfigurieren, wenn die Simulation läuft.
+
+Das können wir machen, indem wir die Simulation im Editor starten und im Outliner Panel die `OrbitSimulation`-Instanz auswählen.
+![Simulation konfigurieren 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/sim-config1.png)
+
+Im Details Panel unter Physics können wir die Eigenschaft `Manual Time Scale` auf `true` setzen.
+![Simulation konfigurieren 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/sim-config2.png)
+
+Die `Time Scale` können wir auf einen höheren Wert setzen, um die Simulation zu beschleunigen oder auf einen niedrigeren Wert setzen, um die Simulation zu verlangsamen.
+![Simulation konfigurieren 3](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/sim-config3.png)
+
+
 
 
 ------------------------------------------------------------------------------------------------------------
