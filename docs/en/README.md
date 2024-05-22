@@ -38,8 +38,16 @@ Disclaimer: The project is a work in progress and may be subject to changes and 
       - [Create celestial bodies](#create-celestial-bodies)
         - [Create the sun](#create-the-sun)
         - [Create the earth](#create-the-earth)
-    - [Starting the simulation](#starting-the-simulation)
-      - [Configure the Simulation](#configure-the-simulation) 
+  - [Starting the simulation](#starting-the-simulation)
+    - [Configure the Simulation](#configure-the-simulation) 
+  - [Visualizing the Orbits](#visualizing-the-orbits)
+    - [Create the Orbit Debugger](#create-the-orbit-debugger)
+    - [Virtual Celestial Body Struct](#virtual-celestial-body-struct)
+    - [Virtual Celestial Body Interface](#virtual-celestial-body-interface)
+    - [OrbitDebug Component](#orbitdebug-component)
+    - [OrbitDebug class](#orbitdebug-class)
+    - [OrbitDebug Properties](#orbitdebug-properties)
+    - [OrbitDebug Functions](#orbitdebug-functions)
 - [Resources](#resources)
 
 <a name="introduction"></a>
@@ -1073,7 +1081,7 @@ The property calculations can be found under `Resources`.
 ------------------------------------------------------------------------------------------------------------
 
 <a name="starting-the-simulation"></a>
-### *Starting the Simulation:*
+## Starting the Simulation:
 
 If we now start the simulation, the celestial bodies should circle around the sun and the orbits should be calculated.
 As the speed of the simulation depends on the time scale, we can start, stop and accelerate the simulation.
@@ -1095,8 +1103,8 @@ We can set the `Time Scale` to a higher value to speed up the simulation or set 
 
 ------------------------------------------------------------------------------------------------------------
 
-<a name="visualization-of-orbits"></a>
-## Visualization of orbits
+<a name="visualizing-the-orbits"></a>
+## Visualizing the Orbits:
 
 Since we are calculating the orbits of the celestial bodies around the sun, but the orbits are not visible,
 it makes sense to add an orbit visualization effect or to create a debugger.

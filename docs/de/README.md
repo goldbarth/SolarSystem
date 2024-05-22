@@ -38,6 +38,16 @@ Hinweis: Das Projekt ist in laufender Entwicklung und kann Änderungen und Aktua
     - [Himmelskörper erstellen](#himmelskörper-erstellen)
       - [Sonne erstellen](#sonne-erstellen)
       - [Erde erstellen](#erde-erstellen)
+  - [Simulation starten](#simulation-starten)
+    - [Simulation konfigurieren](#simulation-konfigurieren)
+  - [Visualisierung der Orbits](#visualisierung-der-orbits)
+    - [Orbit-Debugger erstellen](#orbit-debugger-erstellen)
+      - [Virtuelle Himmelskörper Struktur](#virtuelle-himmelskörper-struktur)
+      - [Virtuelle Himmelskörper Interface](#virtuelle-himmelskörper-interface)
+      - [OrbitDebug Komponente](#orbitdebug-komponente)
+      - [OrbitDebug Klasse](#orbitdebug-klasse)
+      - [OrbitDebug Properties](#orbitdebug-properties)
+      - [OrbitDebug Funktionen](#orbitdebug-funktionen)
 - [Einsatzmittel](#einsatzmittel)
 
 <a name="einführung"></a>
