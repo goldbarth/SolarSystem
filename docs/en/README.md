@@ -11,33 +11,35 @@ Disclaimer: The project is a work in progress and may be subject to changes and 
 - [Features](#features)
 - [Introduction](#introduction)
 - [Getting Started](#getting-started)
-  - [Implement basic classes](#implement-basic-classes) 
-    - [CelestialBody class](#celestialbody-class)
-      - [Properties](#celestialbody-properties)
-      - [Mesh Initialization](#mesh-initialization)
-      - [Getter and setter functions](#getter-and-setter-functions)
-      - [Physics functions](#physics-functions)
-      - [Gravitational constant / Universe struct](#gravitational-constant)
-    - [CelestialBodyRegistry class](#celestialbodyregistry-class)
-      - [Delegate](#celestialbodyregistry-delegate)
-      - [Properties](#celestialbodyregistry-properties)
-      - [Functions](#celestialbodyregistry-functions)
-    - [Game-Mode class](#game-mode-class)
-      - [Expanding the CelestialBody class](#expanding-the-celestialbody-class)
-    - [OrbitSimulation class](#orbitsimulation-class)
-      - [Properties](#orbitsimulation-properties)
-      - [Functions](#orbitsimulation-functions)
-      - [Expanding the game-mode class](#expanding-the-game-mode-class)
-    - [Creating the Simulation](#creating-the-simulation)
-      - [Creating the level](#creating-the-level)
-      - [Adding the game-mode](#adding-the-game-mode)
-      - [Adding the celestial bodies](#adding-the-celestial-bodies)
-        - [Creating the base blueprint](#creating-the-base-blueprint)
-        - [Creating the base material](#creating-the-base-material)
-        - [Create celestial bodies](#create-celestial-bodies)
-          - [Create the sun](#create-the-sun)
-          - [Add post-processing effects](#add-post-processing-effects)
-          - [Create the earth](#create-the-earth)
+- [Implement basic classes](#implement-basic-classes) 
+  - [CelestialBody class](#celestialbody-class)
+    - [Properties](#celestialbody-properties)
+    - [Mesh Initialization](#mesh-initialization)
+    - [Getter and setter functions](#getter-and-setter-functions)
+    - [Physics functions](#physics-functions)
+    - [Gravitational constant / Universe struct](#gravitational-constant)
+  - [CelestialBodyRegistry class](#celestialbodyregistry-class)
+    - [Delegate](#celestialbodyregistry-delegate)
+    - [Properties](#celestialbodyregistry-properties)
+    - [Functions](#celestialbodyregistry-functions)
+  - [Game-Mode class](#game-mode-class)
+    - [Expanding the CelestialBody class](#expanding-the-celestialbody-class)
+  - [OrbitSimulation class](#orbitsimulation-class)
+    - [Properties](#orbitsimulation-properties)
+    - [Functions](#orbitsimulation-functions)
+    - [Expanding the game-mode class](#expanding-the-game-mode-class)
+  - [Creating the Simulation](#creating-the-simulation)
+    - [Creating the level](#creating-the-level)
+    - [Adding the game-mode](#adding-the-game-mode)
+    - [Add post-processing effects](#add-post-processing-effects)
+    - [Adding the celestial bodies](#adding-the-celestial-bodies)
+      - [Creating the base blueprint](#creating-the-base-blueprint)
+      - [Creating the base material](#creating-the-base-material)
+      - [Create celestial bodies](#create-celestial-bodies)
+        - [Create the sun](#create-the-sun)
+        - [Create the earth](#create-the-earth)
+    - [Starting the simulation](#starting-the-simulation)
+      - [Configure the Simulation](#configure-the-simulation) 
 - [Resources](#resources)
 
 <a name="introduction"></a>
@@ -791,7 +793,7 @@ the mass and the position of the celestial bodies.
 For this purpose, the gravitational constant `G`, the mass `M`,
 the distance `R` and the distance squares `SqrR` are calculated to determine the gravitational acceleration.
 
-The gravitational acceleration is calculated for each celestial body and summed to obtain the total acceleration.
+The gravitational acceleration is calculated for each celestial body and summed to get the total acceleration.
 
 Next, we add the function `GetCelestialObjectRegistry` to get and initialize the `CelestialBodyRegistry`.
 
@@ -896,7 +898,7 @@ We add the `OrbitSimulation` property to control the simulation and calculate th
 ## Creating the Simulation
 
 <a name="creating-the-level"></a>
-### Creating the Level
+#### Creating the Level
 
 In the engine in the Content Browser, we create a folder called `Maps`.
 In the folder, we create a new level file,
@@ -912,13 +914,40 @@ to start the simulation and to register and manage the celestial bodies.
 
 ![Adding the Game-Mode](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-game-mode.png)
 
+
+<a name = “add-post-processing-effects”></a>
+##### *Add post-processing effects:*
+
+What is noticeable now is that the sun is only shining very faintly.
+This is because we have not yet added any post-processing effects.
+
+To do this,
+we create a new post-processing volume
+by clicking on the plus symbol in the editor via `Volume` and then `Post-Processing Volume`.
+The volume is automatically added to the scene, and we can configure the settings in the Details Panel.
+
+![Add Post Processing Volume](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-ppv.png)
+
+Two important settings are `Unbound` and `Infinite Extent`,
+where we check the box so that the volume works in the entire scene.
+
+![Configure Post Processing Volume 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-unbound.png)
+
+
+Under Exposure, set the Auto-Exposure `Min EV100` and `Max EV100` to `0`.
+
+![Configure Post Processing Volume 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-auto-exposure.png)
+
+The Auto Exposure setting ensures that the brightness remains the same in every scene.
+
+
 <a name="adding-the-celestial-bodies"></a>
-### Adding the Celestial Bodies
+#### Adding the Celestial Bodies
 
 To use the celestial bodies in the simulation, we need a basic blueprint and material for the celestial bodies.
 
 <a name="creating-the-base-blueprint"></a>
-##### *Creating the Base Blueprint:*
+###### *Creating the Base Blueprint:*
 
 Let's create a base blueprint for the celestial bodies
 by right-clicking on the Blueprints folder we created earlier and then clicking on Blueprint Class.
@@ -942,7 +971,7 @@ This means that we do not have to create a new blueprint for each celestial body
 but can use the basic blueprint and configure the properties in the editor.
 
 <a name="creating-the-base-material"></a>
-##### *Creating the Base Material:*
+###### *Creating the Base Material:*
 
 Let's
 create a base material for the celestial bodies
@@ -965,7 +994,7 @@ Additional parameters can also be added
 or exchanged later to configure the surface of the celestial bodies and add textures.
 
 <a name="create-celestial-bodies"></a>
-#### *Create Celestial Bodies:*
+### *Create Celestial Bodies:*
 
 Let's create the celestial bodies in the editor using the base blueprint and the base material.
 We need at least two celestial bodies to start the simulation and calculate the orbits.
@@ -1015,30 +1044,6 @@ Finally,
 place the sun in the editor by dragging it into the scene and setting the position in the Details panel to `0, 0, 0`.
 This way the sun is in the center of the scene, and the orbits of the celestial bodies are calculated around the sun.
 
-<a name = “add-post-processing-effects”></a>
-##### *Add post-processing effects:*
-
-What is noticeable now is that the sun is only shining very faintly.
-This is because we have not yet added any post-processing effects.
-
-To do this,
-we create a new post-processing volume
-by clicking on the plus symbol in the editor via `Volume` and then `Post-Processing Volume`.
-The volume is automatically added to the scene, and we can configure the settings in the Details Panel.
-
-![Add Post Processing Volume](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-ppv.png)
-
-Two important settings are `Unbound` and `Infinite Extent`,
-where we check the box so that the volume works in the entire scene.
-
-![Configure Post Processing Volume 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-unbound.png)
-
-
-Under Exposure, set the Auto-Exposure `Min EV100` and `Max EV100` to `0`.
-
-![Configure Post Processing Volume 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-auto-exposure.png)
-
-The Auto Exposure setting ensures that the brightness remains the same in every scene.
 
 <a name = “create-the-earth”></a>
 ##### *Create the Earth:*
@@ -1060,6 +1065,329 @@ and setting the position in the details panel to `0, 114242, 0`.
 
 ![Earth localization](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/bp-earth-location.png)
 
+Note:
+The position,
+mass and initial speed of the earth are important so that the orbits of the celestial bodies are calculated correctly.
+The property calculations can be found under `Resources`.
+
+------------------------------------------------------------------------------------------------------------
+
+<a name="starting-the-simulation"></a>
+### *Starting the Simulation:*
+
+If we now start the simulation, the celestial bodies should circle around the sun and the orbits should be calculated.
+As the speed of the simulation depends on the time scale, we can start, stop and accelerate the simulation.
+
+<a name="configure-the-simulation"></a>
+#### Configure the Simulation:
+
+At the moment, the only way to change the time scale and properties of the celestial bodies is to 
+configure the values in the editor when the simulation is running.
+
+We can do this by starting the simulation in the editor and selecting the `OrbitSimulation` instance in the outliner panel.
+![Configure simulation 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/sim-config1.png)
+
+In the Details Panel under Physics we can set the `Manual Time Scale` property to `true`.
+![Configure Simulation 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/sim-config2.png)
+
+We can set the `Time Scale` to a higher value to speed up the simulation or set it to a lower value to slow down the simulation.
+![Configure simulation 3](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/sim-config3.png)
+
+------------------------------------------------------------------------------------------------------------
+
+<a name="visualization-of-orbits"></a>
+## Visualization of orbits
+
+Since we are calculating the orbits of the celestial bodies around the sun, but the orbits are not visible,
+it makes sense to add an orbit visualization effect or to create a debugger.
+
+
+<a name="create-the-orbit-debugger"></a>
+#### *Create the Orbit Debugger*
+
+For the debugger,
+we first need a structure for the virtual celestial bodies so that we do not use the real celestial bodies.
+Also, an interface for the virtual celestial bodies
+to get the properties of the celestial bodies and set them in the actor component.
+The actor component is used to visualize the orbits of the celestial bodies in editor mode (not in game mode).
+
+<a name="virtual-celestial-body-struct"></a>
+##### *Virtual Celestial Body Struct:*
+
+The struct for the virtual celestial bodies should look like this in a new header file `FVirtualBody.h`:
+
+```cpp
+struct FVirtualBody
+{
+	float Mass;
+
+	FVector Location;
+	FVector Velocity;
+
+	explicit FVirtualBody(const ACelestialBody* Body)
+	{
+		if (Body)
+		{
+			Mass = Body->GetMass();
+			Location = Body->GetActorLocation();
+			Velocity = Body->GetInitialVelocity();
+		}
+	}
+};
+```
+
+The `FVirtualBody` structure contains the mass, position and speed of the virtual celestial bodies.
+
+We can use the constructor to transfer the properties of the real celestial bodies to the virtual celestial bodies.
+
+<a name="virtual-celestial-body-interface"></a>
+##### *Virtual Celestial Body Interface:*
+
+To do this,
+we create a new Unreal C++ class derived from `UInterface` or Interface and add the necessary properties and functions.
+
+The interface for the virtual celestial bodies consists only of a header file `IVirtualBody.h` and should look like this:
+
+```cpp
+#include "CoreMinimal.h"
+#include "UObject/Interface.h"
+#include "IVirtualBody.generated.h"
+
+UINTERFACE(MinimalAPI)
+class UVirtualBody : public UInterface
+{
+	GENERATED_BODY()
+};
+
+```
+
+We add `UINTERFACE(MinimalAPI)` to define the interface.
+
+In the second step, we add the functions to get and set the properties of the virtual celestial bodies.
+
+The functions should look like this:
+
+```cpp
+#include "CoreMinimal.h"
+#include "UObject/Interface.h"
+#include "IVirtualBody.generated.h"
+
+UINTERFACE(MinimalAPI)
+class UVirtualBody : public UInterface
+{
+	GENERATED_BODY()
+};
+
+class SOLARSYSTEM_API IVirtualBody
+{
+	GENERATED_BODY()
+
+public:
+	virtual bool GetDrawOrbitPaths() const = 0;
+	virtual void DrawOrbitPaths() = 0;
+};
+```
+
+The function `GetDrawOrbitPaths` returns the bool to switch the orbit visualization on and off.
+The function `DrawOrbitPaths` is used to visualize the orbits of the celestial bodies.
+
+<a name="orbitdebug-component"></a>
+##### *OrbitDebug Component:*
+
+Let's create a new Unreal C++ class derived from `UActorComponent` and add the necessary properties and functions.
+
+The header file `VirtualBodyComponent.h` should look like this:
+
+```cpp
+#include "CoreMinimal.h"
+#include "IVirtualBody.h"
+#include "Components/ActorComponent.h"
+#include "OrbitDrawComponent.generated.h"
+
+
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+class SOLARSYSTEM_API UOrbitDrawComponent : public USceneComponent
+{
+	GENERATED_BODY()
+
+public:
+	UOrbitDrawComponent();
+
+private:
+	IVirtualBody* OrbitDrawer = nullptr;
+	
+	void DrawOrbits() const;
+	
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+								FActorComponentTickFunction* ThisTickFunction) override;
+};
+```
+
+We add the raw pointer `OrbitDrawer` to use the interface for the virtual celestial bodies.
+
+The source file `VirtualBodyComponent.cpp` should look like this:
+
+```cpp
+#include "OrbitDrawComponent.h"
+
+UOrbitDrawComponent::UOrbitDrawComponent() : OrbitDrawer(Cast<IVirtualBody>(GetOwner()))
+{
+	PrimaryComponentTick.bCanEverTick = true;
+	bTickInEditor = true;
+}
+
+void UOrbitDrawComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	DrawOrbits();
+}
+
+void UOrbitDrawComponent::DrawOrbits() const
+{
+	if (OrbitDrawer && OrbitDrawer->GetDrawOrbitPaths())
+	{
+		OrbitDrawer->DrawOrbitPaths();
+	}
+}
+```
+
+The constructor initializes the raw pointer `OrbitDrawer` by receiving the interface from the OrbitDebug class.
+
+In the `TickComponent` function, the `DrawOrbits` function is called to visualize the orbits of the celestial bodies.
+
+<a name="orbitdebug-class"></a>
+##### *OrbitDebug class:*
+
+Let's create an orbit debugger to visualize the orbits of the celestial bodies.
+
+To do this, we create a new C++ class derived from `AActor` and add the necessary properties and functions.
+
+The header file `OrbitDebug.h` should look like this:
+
+```cpp
+#pragma once
+
+#include "CoreMinimal.h"
+#include "FVirtualBody.h"
+#include "IVirtualBody.h"
+#include "OrbitDrawComponent.h"
+#include "GameFramework/Actor.h"
+#include "OrbitDebug.generated.h"
+
+UCLASS()
+class SOLARSYSTEM_API AOrbitDebug : public AActor, public IVirtualBody
+{
+	GENERATED_BODY()
+
+public:
+	AOrbitDebug();
+```
+
+The header files for the virtual celestial bodies, the interface and the actor component are used in the OrbitDebug class.
+In addition, `IVirtualBody` is implemented as an interface for the virtual celestial bodies.
+
+<a name="orbitdebug-properties"></a>
+###### *OrbitDebug Properties:*
+
+Now let's add the properties to visualize the orbits of the celestial bodies.
+We need the following properties for this:
+- OrbitDrawComponent (actor component for the visualization of the orbits)
+- Bool for switching the orbit visualization on and off
+- Line thickness (for the visualization of the orbits)
+- Number of steps for the orbit (number of points)
+- Time interval for the orbit (distance between the points)
+
+The properties for the orbit debugger should look like this:
+
+```cpp
+protected:
+	AOrbitDebug();
+	
+	UPROPERTY(VisibleDefaultsOnly)
+	UOrbitDrawComponent* OrbitDrawComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
+	bool bDrawOrbitPaths;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
+	float LineThickness = 1.5f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
+	int NumSteps = 35000;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
+	float TimeStep = 0.1f;
+```
+
+All properties are editable in the blueprint so that we can configure the orbits of the celestial bodies.
+
+The `bDrawOrbitPaths` bool is used to switch the orbit visualization on and off.
+
+The `OrbitDrawComponent` property is used to visualize the orbits of the celestial bodies.
+
+The `NumSteps` property specifies the number of points that are calculated for the orbit.
+The `TimeStep` property specifies the time interval used for the orbit.
+
+The `LineThickness` property specifies the thickness of the lines used for the orbit.
+
+<a name="orbitdebug-getter-and-setter"></a>
+##### *OrbitDebug getter and setter:*
+
+Now we add the getter and setter functions to get and set the properties.
+The getter and setter functions should look like this:
+
+```cpp
+public:
+	virtual bool GetDrawOrbitPaths() const override { return bDrawOrbitPaths; }
+	void SetDrawOrbitPaths(const bool& bNewDrawOrbitPaths) { bDrawOrbitPaths = bNewDrawOrbitPaths; }
+
+	float GetLineThickness() const { return LineThickness; }
+	void SetLineThickness(const float& NewLineThickness) { LineThickness = NewLineThickness; }
+
+	int GetNumSteps() const { return NumSteps; }
+	void SetNumSteps(const int& NewNumSteps) { NumSteps = NewNumSteps; }
+
+	float GetTimeStep() const { return TimeStep; }
+	void SetTimeStep(const float& NewTimeStep) { TimeStep = NewTimeStep; }
+```
+
+The getter and setter functions are defined `inline` to get and set the properties of the orbit debugger.
+
+<a name="orbitdebug-functions"></a>
+##### *OrbitDebug Functions:*
+
+Next, we add the interface functions.
+
+The functions in the header file `OrbitDebug.h` should look like this:
+
+```cpp
+	virtual void DrawOrbitPaths() override;
+```
+
+We need the following functions to calculate the orbits of the celestial bodies:
+
+```cpp
+private:
+	TArray<FVirtualBody> InitializeVirtualBodies(const TArray<AActor*>& Bodies);
+	void SimulateOrbits(TArray<FVirtualBody>& VirtualBodies, TArray<FVector>& DrawPoints) const;
+	void UpdateVelocities(TArray<FVirtualBody>& VirtualBodies) const;
+	void UpdatePositions(TArray<FVirtualBody>& VirtualBodies, TArray<FVector>& DrawPoints, const int& Step) const;
+	void DrawPaths(const TArray<FVirtualBody>& VirtualBodies, const TArray<FVector>& DrawPoints, TArray<AActor*> Bodies) const;
+	FVector CalculateAcceleration(const int& BodyIndex, const TArray<FVirtualBody>& VirtualBodies) const;
+```
+
+The `InitializeVirtualBodies` function initializes the virtual celestial bodies based on the real celestial bodies.
+
+The function `SimulateOrbits` simulates the orbits of the celestial bodies based on the virtual celestial bodies.
+
+The functions `UpdateVelocities` and `UpdatePositions` update the velocities and positions of the virtual celestial bodies.
+
+The function `DrawPaths` visualizes the orbits of the celestial bodies based on the virtual celestial bodies.
+
+The function `CalculateAcceleration` calculates the acceleration of the celestial bodies based on the virtual celestial bodies.
+
+
 
 ------------------------------------------------------------------------------------------------------------
 <a name="resources"></a>
@@ -1067,5 +1395,6 @@ and setting the position in the details panel to `0, 114242, 0`.
 
 - Unreal Engine 5.3.2
 - Visual Studio 2022, JetBrains Rider, or another IDE with C++ support
+- Unreal Engine Documentation: [UE 5.3](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-3-documentation)
 
-- Calculating the properties of celestial bodies and the orbits: [Model-Calculations](https://github.com/goldbarth/SolarSystem/blob/goldbarth/docs/calc/README.md)
+- Calculations of the properties of celestial bodies and orbits: [Model-Calculations](https://github.com/goldbarth/SolarSystem/blob/goldbarth/docs/calc/README.md)

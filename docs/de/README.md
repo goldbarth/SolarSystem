@@ -11,33 +11,33 @@ Hinweis: Das Projekt ist in laufender Entwicklung und kann Änderungen und Aktua
 - [Einführung](#einführung)
 - [Eigenschaften](#eigenschaften)
 - [Erste Schritte](#erste-schritte)
-  - [Grundlegende Klassen Implementieren](#grundlegende-klassen-implementieren)
-    - [CelestialBody Klasse](#celestialbody-klasse)
-      - [Properties](#celestialbody-properties)
-      - [Mesh Initialisierung](#mesh-initialisierung)
-      - [Getter- und Setter-Funktionen](#getter--und-setter-funktionen)
-      - [Physikfunktionen](#physikfunktionen)
-      - [Gravitationskonstante / Universe Struktur](#gravitationskonstante)
-    - [CelestialBodyRegistry Klasse](#celestialbodyregistry-klasse)
-      - [Delegaten](#celestialbodyregistry-delegaten)
-      - [Properties](#celestialbodyregistry-properties)
-      - [Funktionen](#celestialbodyregistry-funktionen)
-    - [Game-Mode Klasse](#game-mode-klasse)
-      - [Erweiterung der CelestialBody Klasse](#erweiterung-der-celestialbody-klasse)
-    - [OrbitSimulation Klasse](#orbitsimulation-klasse)
-      - [Properties](#orbitsimulation-properties)
-      - [Funktionen](#orbitsimulation-funktionen)
-      - [Erweiterung der Game-Mode Klasse](#erweiterung-der-game-mode-klasse)
-    - [Erstellen der Simulation](#erstellen-der-simulation)
-      - [Level erstellen](#level-erstellen)
-      - [GameMode hinzufügen](#gamemode-hinzufügen)
-      - [Himmelskörper hinzufügen](#die-himmelskörper-hinzufügen)
-        - [Basis Blueprint erstellen](#basis-blueprint-erstellen)
-        - [Basis Material erstellen](#basis-material-erstellen)
-        - [Himmelskörper erstellen](#himmelskörper-erstellen)
-          - [Sonne erstellen](#sonne-erstellen)
-          - [Post-Processing-Effekte hinzufügen](#post-processing-effekte-hinzufügen)
-          - [Erde erstellen](#erde-erstellen)
+- [Grundlegende Klassen Implementieren](#grundlegende-klassen-implementieren)
+  - [CelestialBody Klasse](#celestialbody-klasse)
+    - [Properties](#celestialbody-properties)
+    - [Mesh Initialisierung](#mesh-initialisierung)
+    - [Getter- und Setter-Funktionen](#getter--und-setter-funktionen)
+    - [Physikfunktionen](#physikfunktionen)
+    - [Gravitationskonstante / Universe Struktur](#gravitationskonstante)
+  - [CelestialBodyRegistry Klasse](#celestialbodyregistry-klasse)
+    - [Delegaten](#celestialbodyregistry-delegaten)
+    - [Properties](#celestialbodyregistry-properties)
+    - [Funktionen](#celestialbodyregistry-funktionen)
+  - [Game-Mode Klasse](#game-mode-klasse)
+    - [Erweiterung der CelestialBody Klasse](#erweiterung-der-celestialbody-klasse)
+  - [OrbitSimulation Klasse](#orbitsimulation-klasse)
+    - [Properties](#orbitsimulation-properties)
+    - [Funktionen](#orbitsimulation-funktionen)
+    - [Erweiterung der Game-Mode Klasse](#erweiterung-der-game-mode-klasse)
+- [Erstellen der Simulation](#erstellen-der-simulation)
+  - [Level erstellen](#level-erstellen)
+  - [GameMode hinzufügen](#gamemode-hinzufügen)
+  - [Post-Processing-Effekte hinzufügen](#post-processing-effekte-hinzufügen)
+  - [Himmelskörper hinzufügen](#die-himmelskörper-hinzufügen)
+    - [Basis Blueprint erstellen](#basis-blueprint-erstellen)
+    - [Basis Material erstellen](#basis-material-erstellen)
+    - [Himmelskörper erstellen](#himmelskörper-erstellen)
+      - [Sonne erstellen](#sonne-erstellen)
+      - [Erde erstellen](#erde-erstellen)
 - [Einsatzmittel](#einsatzmittel)
 
 <a name="einführung"></a>
@@ -869,7 +869,7 @@ Durch das Setzten der skalierbaren DeltaTime kann die Simulation gesteuert werde
 Jetzt können wir die Orbits der Himmelskörper berechnen und daraus eine Simulation erstellen.
 
 <a name="erweiterung-der-game-mode-klasse"></a>
-### Erweiterung der Game-Mode Klasse
+#### Erweiterung der Game-Mode Klasse
 
 Um die Simulation zu starten und die Himmelskörper zu registrieren und zu verwalten, müssen wir die GameMode-Klasse erweitern.
 
@@ -911,7 +911,7 @@ Wir fügen die `OrbitSimulation`-Property hinzu, um die Simulation zu steuern un
 ## Erstellen der Simulation
 
 <a name="level-erstellen"></a>
-### Level erstellen:
+#### Level erstellen:
 
 In der Engine im Content Browser erstellen wir einen Ordner `Maps`.
 In dem Ordner erstellen wir eine neue Level-Datei, z.B. `SolarSystemSimulation`, in dem wir mit Rechtsklick auf den Ordner `Maps` und dann auf `Level` klicken.
@@ -925,13 +925,35 @@ Den GameMode können wir in den World Settings des Levels setzen, um die Simulat
 
 ![GameMode hinzufügen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-game-mode.png)
 
+
+<a name = "post-processing-effekte-hinzufügen"></a>
+##### *Post-Processing Effekte hinzufügen:*
+
+Um die Szene zu verbessern, fügen wir Post-Processing Effekte hinzu, um die Beleuchtung und die Atmosphäre zu verbessern.
+
+Dazu erstellen wir ein neues Post-Processing Volume, indem wir über das Plus-Symbol im Editor über `Volume` und dann `Post-Processing Volume` klicken.
+Das Volume wird automatisch in die Szene hinzugefügt und wir können die Einstellungen im Details Panel konfigurieren.
+
+![Post-Processing Volume hinzufügen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-ppv.png)
+
+Zwei wichtige Einstellungen sind `Unbound` bzw. `Infinite Extent`, da setzen wir den Haken, damit das Volume in der ganzen Szene wirkt.
+
+![Post-Processing Volume konfigurieren 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-unbound.png)
+
+Unter Exposure die Auto-Exposure `Min EV100` und `Max EV100` auf `0` setzen.
+
+![Post-Processing Volume konfigurieren 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-auto-exposure.png)
+
+Die eingestellte Auto-Exposure sorgt dafür, dass die Helligkeit in jeder Szenerie gleich bleibt.
+
+
 <a name = "die-himmelskoerper-hinzufügen"></a>
 ### Die Himmelskörper hinzufügen
 
 Um die Himmelskörper in der Simulation zu verwenden, brauchen wir ein Basis-Blueprint und Material für die Himmelskörper.
 
 <a name = "basis-blueprint-erstellen"></a>
-##### *Basis Blueprint erstellen:*
+###### *Basis Blueprint erstellen:*
 
 Erstellen wir ein Basis-Blueprint für die Himmelskörper, indem wir mit Rechtsklick auf den Ordner `Blueprints` den wir vorher erstellen und dann auf `Blueprint Class` klicken.
 
@@ -951,7 +973,7 @@ Zuletzt deaktivieren wir `Enable Gravity` da wir unsere eigene Gravitationssimul
 So müssen wir nicht für jeden Himmelskörper ein neues Blueprint erstellen, sondern können das Basis Blueprint verwenden und die Eigenschaften im Editor konfigurieren.
 
 <a name = "basis-material-erstellen"></a>
-##### *Basis Material erstellen:*
+###### *Basis Material erstellen:*
 
 Erstellen wir ein Basis-Material für die Himmelskörper, indem wir mit Rechtsklick auf den Ordner `Materials` den wir vorher erstellen und dann auf `Material` klicken.
 Wir benennen das Material z.B. `M_CelestialBodySurfaceBase`.
@@ -1018,27 +1040,6 @@ Für die Sonne setzen wir die Linienfarbe auf `FLinearColor(1, 1, 0, 1)` um die 
 Zum Schluss platziere die Sonne im Editor, in dem wir sie in die Szene ziehen und die Position im Details Panel auf `0, 0, 0` setzen.
 So ist die Sonne im Zentrum der Szene und die Orbits der Himmelskörper werden um die Sonne berechnet.
 
-<a name = "post-processing-effekte-hinzufügen"></a>
-##### *Post-Processing Effekte hinzufügen:*
-
-Was jetzt auffällt ist, dass die Sonne nur sehr schwach leuchtet.
-Das liegt daran, dass wir noch keine Post-Processing Effekte hinzugefügt haben.
-
-Dazu erstellen wir ein neues Post-Processing Volume, indem wir über das Plus-Symbol im Editor über `Volume` und dann `Post-Processing Volume` klicken.
-Das Volume wird automatisch in die Szene hinzugefügt und wir können die Einstellungen im Details Panel konfigurieren.
-
-![Post-Processing Volume hinzufügen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/add-ppv.png)
-
-Zwei wichtige Einstellungen sind `Unbound` bzw. `Infinite Extent`, da setzen wir den Haken, damit das Volume in der ganzen Szene wirkt.
-
-![Post-Processing Volume konfigurieren 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-unbound.png)
-
-Unter Exposure die Auto-Exposure `Min EV100` und `Max EV100` auf `0` setzen.
-
-![Post-Processing Volume konfigurieren 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/ppv-auto-exposure.png)
-
-Die eingestellte Auto-Exposure sorgt dafür, dass die Helligkeit in jeder Szenerie gleich bleibt. 
-
 <a name = "erde-erstellen"></a>
 ##### *Erde erstellen:*
 
@@ -1058,6 +1059,329 @@ platzieren wir die Erde im Editor, indem wir sie in die Szene ziehen und die Pos
 
 ![Erde positionieren](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/bp-earth-location.png)
 
+Hinweis: Die Position, Masse und Initialgeschwindigkeit der Erde ist wichtig, damit die Orbits der Himmelskörper korrekt berechnet werden.
+Die Eigenschaftsberechnungen können unter `Einsatzmittel` nachgelesen werden.
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+
+<a name = "simulation-starten"></a>
+## Simulation starten
+
+Wenn wir jetzt die Simulation starten, sollten die Himmelskörper um die Sonne kreisen und die Orbits berechnet werden.
+Da die Geschwindigkeit der Simulation von der Zeitskala abhängt, können wir die Simulation starten, stoppen und beschleunigen.
+
+<a name="simulation-konfigurieren"></a>
+#### Simulation konfigurieren
+
+Momentan ist die einzige Möglichkeit die Zeitskala und Eigenschaften der Himmelskörper zu ändern, 
+die Werte im Editor zu konfigurieren, wenn die Simulation läuft.
+
+Das können wir machen, indem wir die Simulation im Editor starten und im Outliner Panel die `OrbitSimulation`-Instanz auswählen.
+![Simulation konfigurieren 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/sim-config1.png)
+
+Im Details Panel unter Physics können wir die Eigenschaft `Manual Time Scale` auf `true` setzen.
+![Simulation konfigurieren 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/sim-config2.png)
+
+Die `Time Scale` können wir auf einen höheren Wert setzen, um die Simulation zu beschleunigen oder auf einen niedrigeren Wert setzen, um die Simulation zu verlangsamen.
+![Simulation konfigurieren 3](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/sim-config3.png)
+
+
+------------------------------------------------------------------------------------------------------------
+
+<a name="visualisierung-der-orbits"></a>
+## Visualisierung der Orbits
+
+Da wir die Umlaufbahnen der Himmelskörper um die Sonne berechnen, aber die Umlaufbahnen nicht sichtbar sind,
+ist es sinnvoll einen Orbit-Visualisierungseffekt hinzuzufügen bzw. einen Debugger zu erstellen.
+
+<a name="orbit-debugger-erstellen"></a>
+#### *Orbit-Debugger erstellen:*
+
+Für den Debugger brauchen wir vorher noch eine Struktur für die virtuellen Himmelskörper, damit wir nicht die echten Himmelskörper verwenden,
+ein Interface für die virtuellen Himmelskörper, um die Eigenschaften der Himmelskörper zu erhalten und in der Actor-Komponente zu setzen.
+Die Actor-Komponente wird verwendet, um die Umlaufbahnen der Himmelskörper im Editor-Modus (nicht im Play-Modus) zu visualisieren.
+
+<a name="virtuelle-himmelskoerper-struktur"></a>
+##### *Virtuelle Himmelskörper Struktur:*
+
+Die Struktur für die virtuellen Himmelskörper sollte in einer neuen Header-Datei `FVirtualBody.h` wie folgt aussehen:
+
+```cpp
+struct FVirtualBody
+{
+	float Mass;
+
+	FVector Location;
+	FVector Velocity;
+
+	explicit FVirtualBody(const ACelestialBody* Body)
+	{
+		if (Body)
+		{
+			Mass = Body->GetMass();
+			Location = Body->GetActorLocation();
+			Velocity = Body->GetInitialVelocity();
+		}
+	}
+};
+```
+
+Die Struktur `FVirtualBody` enthält die Masse, Position und Geschwindigkeit der virtuellen Himmelskörper.
+
+Mit dem Konstruktor können wir die Eigenschaften der echten Himmelskörper in die virtuellen Himmelskörper übertragen.
+
+<a name="virtuelle-himmelskoerper-interface"></a>
+##### *Virtuelle Himmelskörper Interface:*
+
+Dafür erstellen wir eine neue Unreal C++ Klasse, die von `UInterface` bzw. Interface abgeleitet ist und fügen die notwendigen Properties und Funktionen hinzu.
+
+Das Interface für die virtuellen Himmelskörper besteht nur aus einer Header-Datei `IVirtualBody.h` und sollte wie folgt aussehen:
+
+```cpp
+#include "CoreMinimal.h"
+#include "UObject/Interface.h"
+#include "IVirtualBody.generated.h"
+
+UINTERFACE(MinimalAPI)
+class UVirtualBody : public UInterface
+{
+	GENERATED_BODY()
+};
+
+```
+
+Wir fügen `UINTERFACE(MinimalAPI)` hinzu, um das Interface zu definieren.
+
+Im zweiten Schritt fügen wir die Funktionen hinzu, um die Eigenschaften der virtuellen Himmelskörper zu erhalten und zu setzen.
+
+Die Funktionen sollten folgendermaßen aussehen:
+
+```cpp
+#include "CoreMinimal.h"
+#include "UObject/Interface.h"
+#include "IVirtualBody.generated.h"
+
+UINTERFACE(MinimalAPI)
+class UVirtualBody : public UInterface
+{
+	GENERATED_BODY()
+};
+
+class SOLARSYSTEM_API IVirtualBody
+{
+	GENERATED_BODY()
+
+public:
+	virtual bool GetDrawOrbitPaths() const = 0;
+	virtual void DrawOrbitPaths() = 0;
+};
+```
+
+Die Funktion `GetDrawOrbitPaths` gibt den Bool zurück, um die Orbit-Visualisierung ein- und auszuschalten.
+Die Funktion `DrawOrbitPaths` wird verwendet, um die Umlaufbahnen der Himmelskörper zu visualisieren.
+
+<a name="orbitdebug-komponente"></a>
+##### *OrbitDebug Komponente:*
+
+Erstellen wir eine neue Unreal C++ Klasse, die von `UActorComponent` abgeleitet ist und fügen die notwendigen Properties und Funktionen hinzu.
+
+Die Header-Datei `VirtualBodyComponent.h` sollte wie folgt aussehen:
+
+```cpp
+#include "CoreMinimal.h"
+#include "IVirtualBody.h"
+#include "Components/ActorComponent.h"
+#include "OrbitDrawComponent.generated.h"
+
+
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+class SOLARSYSTEM_API UOrbitDrawComponent : public USceneComponent
+{
+	GENERATED_BODY()
+
+public:
+	UOrbitDrawComponent();
+
+private:
+	IVirtualBody* OrbitDrawer = nullptr;
+	
+	void DrawOrbits() const;
+	
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+								FActorComponentTickFunction* ThisTickFunction) override;
+};
+```
+
+Wir fügen den Raw-Pointer `OrbitDrawer` hinzu, um das Interface für die virtuellen Himmelskörper zu verwenden.
+
+Die Quelldatei `VirtualBodyComponent.cpp` sollte wie folgt aussehen:
+
+```cpp
+#include "OrbitDrawComponent.h"
+
+UOrbitDrawComponent::UOrbitDrawComponent() : OrbitDrawer(Cast<IVirtualBody>(GetOwner()))
+{
+	PrimaryComponentTick.bCanEverTick = true;
+	bTickInEditor = true;
+}
+
+void UOrbitDrawComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	DrawOrbits();
+}
+
+void UOrbitDrawComponent::DrawOrbits() const
+{
+	if (OrbitDrawer && OrbitDrawer->GetDrawOrbitPaths())
+	{
+		OrbitDrawer->DrawOrbitPaths();
+	}
+}
+```
+
+Der Konstruktor initialisiert den Raw-Pointer `OrbitDrawer`, indem er das Interface von der OrbitDebug Klasse erhält.
+
+In der `TickComponent`-Funktion wird die Funktion `DrawOrbits` aufgerufen, um die Umlaufbahnen der Himmelskörper zu visualisieren.
+
+<a name="orbit-debug-klasse"></a>
+##### *OrbitDebug Klasse:*
+
+Erstellen wir einen Orbit-Debugger, um die Umlaufbahnen der Himmelskörper zu visualisieren.
+
+Dazu erstellen wir eine neue C++ Klasse, die von `AActor` abgeleitet ist und fügen die notwendigen Properties und Funktionen hinzu.
+
+Die Header-Datei `OrbitDebug.h` sollte wie folgt aussehen:
+
+```cpp
+#pragma once
+
+#include "CoreMinimal.h"
+#include "FVirtualBody.h"
+#include "IVirtualBody.h"
+#include "OrbitDrawComponent.h"
+#include "GameFramework/Actor.h"
+#include "OrbitDebug.generated.h"
+
+UCLASS()
+class SOLARSYSTEM_API AOrbitDebug : public AActor, public IVirtualBody
+{
+	GENERATED_BODY()
+
+public:
+	AOrbitDebug();
+```
+
+Die Header-Dateien für die virtuellen Himmelskörper, das Interface und die Actor-Komponente werden in der OrbitDebug-Klasse verwendet.
+Außerdem wird `IVirtualBody` als Interface für die virtuellen Himmelskörper implementiert.
+
+
+<a name="orbit-debug-properties"></a>
+###### *OrbitDebug Properties:*
+
+Jetzt fügen wir erstmal die Properties hinzu, um die Umlaufbahnen der Himmelskörper zu visualisieren.
+Dafür brauchen wir folgende Properties:
+- OrbitDrawComponent (Actor-Komponente für die Orbit-Visualisierung)
+- Bool für das Ein- und Ausschalten der Orbit-Visualisierung
+- Linien-Dicke (Für die Visualisierung der Orbits)
+- Anzahl der Schritte für die Umlaufbahn (Anzahl der Punkte)
+- Zeitintervall für die Umlaufbahn (Abstand zwischen den Punkten)
+
+Die Properties für den Orbit-Debugger sollten folgendermaßen aussehen:
+
+```cpp
+protected:
+	AOrbitDebug();
+	
+	UPROPERTY(VisibleDefaultsOnly)
+	UOrbitDrawComponent* OrbitDrawComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
+	bool bDrawOrbitPaths;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
+	float LineThickness = 1.5f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
+	int NumSteps = 35000;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
+	float TimeStep = 0.1f;
+```
+
+Alle Properties sind im Blueprint editierbar, damit wir die Umlaufbahnen der Himmelskörper konfigurieren können.
+
+Die `OrbitDrawComponent`-Property wird verwendet, um die Umlaufbahnen der Himmelskörper zu visualisieren.
+
+Der `bDrawOrbitPaths`-Bool wird verwendet, um die Orbit-Visualisierung ein- und auszuschalten.
+
+Die `NumSteps`-Property gibt die Anzahl der Punkte an, die für die Umlaufbahn berechnet werden.
+Die `TimeStep`-Property gibt das Zeitintervall an, das für die Umlaufbahn verwendet wird.
+
+Die `LineThickness`-Property gibt die Dicke der Linien an, die für die Umlaufbahn verwendet wird.
+
+<a name="orbitdebug-getter-und-setter"></a>
+##### *OrbitDebug Getter und Setter:*
+
+Jetzt fügen wir die Getter- und Setter-Funktionen hinzu, um die Properties zu erhalten und zu setzen.
+Die Getter- und Setter-Funktionen sollten folgendermaßen aussehen:
+
+```cpp
+public:
+	virtual bool GetDrawOrbitPaths() const override { return bDrawOrbitPaths; }
+	void SetDrawOrbitPaths(const bool& bNewDrawOrbitPaths) { bDrawOrbitPaths = bNewDrawOrbitPaths; }
+
+	float GetLineThickness() const { return LineThickness; }
+	void SetLineThickness(const float& NewLineThickness) { LineThickness = NewLineThickness; }
+
+	int GetNumSteps() const { return NumSteps; }
+	void SetNumSteps(const int& NewNumSteps) { NumSteps = NewNumSteps; }
+
+	float GetTimeStep() const { return TimeStep; }
+	void SetTimeStep(const float& NewTimeStep) { TimeStep = NewTimeStep; }
+```
+
+Die Getter- und Setter-Funktionen sind `inline` und geben die Properties zurück bzw. setzen die Properties.
+
+<a name="orbit-debug-funktionen"></a>
+##### *OrbitDebug Funktionen:*
+
+Als Nächstes fügen wir die Interface-Funktionen hinzu.
+
+Die Funktionen in der Header-Datei `OrbitDebug.h` sollten folgendermaßen aussehen:
+
+```cpp
+	virtual void DrawOrbitPaths() override;
+```
+
+Für die Berechnung der Umlaufbahnen der Himmelskörper brauchen wir folgende Funktionen:
+
+```cpp
+private:
+	TArray<FVirtualBody> InitializeVirtualBodies(const TArray<AActor*>& Bodies);
+	void SimulateOrbits(TArray<FVirtualBody>& VirtualBodies, TArray<FVector>& DrawPoints) const;
+	void UpdateVelocities(TArray<FVirtualBody>& VirtualBodies) const;
+	void UpdatePositions(TArray<FVirtualBody>& VirtualBodies, TArray<FVector>& DrawPoints, const int& Step) const;
+	void DrawPaths(const TArray<FVirtualBody>& VirtualBodies, const TArray<FVector>& DrawPoints, TArray<AActor*> Bodies) const;
+	FVector CalculateAcceleration(const int& BodyIndex, const TArray<FVirtualBody>& VirtualBodies) const;
+```
+
+Die Funktion `InitializeVirtualBodies` initialisiert die virtuellen Himmelskörper basierend auf den echten Himmelskörpern.
+
+Die Funktion `SimulateOrbits` simuliert die Umlaufbahnen der Himmelskörper basierend auf den virtuellen Himmelskörpern.
+
+Die Funktionen `UpdateVelocities` und `UpdatePositions` aktualisieren die Geschwindigkeiten und Positionen der virtuellen Himmelskörper.
+
+Die Funktion `DrawPaths` visualisiert die Umlaufbahnen der Himmelskörper basierend auf den virtuellen Himmelskörpern.
+
+Die Funktion `CalculateAcceleration` berechnet die Beschleunigung der Himmelskörper basierend auf den virtuellen Himmelskörpern.
+
+
+
 
 ------------------------------------------------------------------------------------------------------------
 <a name="einsatzmittel"></a>
@@ -1065,5 +1389,6 @@ platzieren wir die Erde im Editor, indem wir sie in die Szene ziehen und die Pos
 
 - Unreal Engine 5.3.2
 - Visual Studio 2022, JetBrains Rider oder ein anderer IDE mit C++ Unterstützung
+- Unreal Engine 5.3 Dokumentation: [UE 5.3](https://dev.epicgames.com/documentation/de-de/unreal-engine/unreal-engine-5-3-documentation)
 
 - Berechnungen der Eigenschaften von Himmelskörpern und Orbits: [Modell-Kalkulationen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/docs/calc/README.md)

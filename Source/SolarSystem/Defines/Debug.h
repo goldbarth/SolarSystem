@@ -1,4 +1,6 @@
-﻿#pragma once
+﻿// Copyright (c) 2024 Felix Wahl (https://github.com/goldbarth). Provided under the MIT License. Full text: https://opensource.org/licenses/MIT
+
+#pragma once
 
 // Debugging macros
 
