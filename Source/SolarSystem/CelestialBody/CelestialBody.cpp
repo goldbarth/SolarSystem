@@ -12,13 +12,13 @@ ACelestialBody::ACelestialBody()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	SetMeshComponent();
-	SetRadius();
 }
 
 void ACelestialBody::BeginPlay()
 {
 	Super::BeginPlay();
 	SetCurrentVelocity(InitialVelocity);
+	SetRadius();
 	MassCalculation();
 	
 	FTimerHandle TimerHandle;

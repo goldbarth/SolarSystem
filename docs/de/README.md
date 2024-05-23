@@ -307,7 +307,9 @@ Die Formel für die Masse-Berechnung lautet:
 `m = r² * G` oder `Masse = Radius * Radius * G`.
 Das Ergebnis wird in der Masse-Property gespeichert und die Masse der Mesh-Komponente überschrieben.
 
-Jetzt setzten wir im Konstruktor den Radius und in der Funktion `BeginPlay` die aktuelle Geschwindigkeit und berechnen die Masse des Himmelskörpers.
+Jetzt setzten wir in der Funktion `BeginPlay` die aktuelle Geschwindigkeit und den Radius und berechnen die Masse des Himmelskörpers.
+Da die Werte im Editor gesetzt werden können, müssen die Funktionen in der `BeginPlay` Funktion aufgerufen werden und nicht im Konstruktor, 
+da sonst die Werte nicht richtig übernommen werden.
 
 Die Implementierung der Funktionen sollte in der Quelldatei `CelestialBody.cpp` wie folgt aussehen:
 
@@ -320,15 +322,14 @@ ACelestialBody::ACelestialBody()
     RootComponent = MeshComponent;
     MeshComponent->SetSimulatePhysics(true);
     MeshComponent->SetEnableGravity(false);
-
-    SetRadius();
 }
 
 void ACelestialBody::BeginPlay()
 {
     Super::BeginPlay();
-    
+ 
     SetCurrentVelocity(InitialVelocity);
+    SetRadius();
     MassCalculation();
 }
 ```

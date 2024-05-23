@@ -97,9 +97,8 @@ FVector AOrbitDebug::CalculateAcceleration(const int& BodyIndex, const TArray<FV
 		if(BodyIndex != i)
 		{
 			const FVector Direction = VirtualBodies[i].Location - VirtualBodies[BodyIndex].Location;
-			const float Distance = Direction.Size();
-			const float Force = FUniverse::GravitationalConstant * VirtualBodies[i].Mass * VirtualBodies[BodyIndex].Mass / (Distance * Distance);
-			Acceleration += Direction.GetSafeNormal() * (Force / VirtualBodies[BodyIndex].Mass);
+			const float DistanceSquared = FVector::DistSquared(VirtualBodies[i].Location, VirtualBodies[BodyIndex].Location);
+			Acceleration += Direction.GetSafeNormal() * (FUniverse::GravitationalConstant * VirtualBodies[i].Mass) / DistanceSquared;
 		}
 	}
 	

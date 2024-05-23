@@ -306,6 +306,33 @@ The formula for the mass calculation is
 `m = r² * G` or `Mass = Radius * Radius * G`.
 The result is saved in the mass property, and the mass of the mesh component is overwritten.
 
+Now we set the current speed and radius in the `BeginPlay` function and calculate the mass of the celestial body.
+As the values can be set in the editor, the functions must be called in the `BeginPlay` function and not in the constructor,
+otherwise the values will not be transferred correctly.
+
+The implementation of the functions should look like this in the source file `CelestialBody.cpp`:
+
+```cpp
+ACelestialBody::ACelestialBody()
+{
+    PrimaryActorTick.bCanEverTick = true;
+
+    MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+    RootComponent = MeshComponent;
+    MeshComponent->SetSimulatePhysics(true);
+    MeshComponent->SetEnableGravity(false);
+}
+
+void ACelestialBody::BeginPlay()
+{
+    Super::BeginPlay();
+ 
+    SetCurrentVelocity(InitialVelocity);
+    SetRadius();
+    MassCalculation();
+}
+```
+
 ------------------------------------------------------------------------------------------------------------
 
 <a name="gravitational-constant"></a>
