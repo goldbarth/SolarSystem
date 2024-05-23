@@ -41,16 +41,19 @@ Disclaimer: The project is a work in progress and may be subject to changes and 
       - [Create the sun](#create-the-sun)
       - [Create the earth](#create-the-earth)
   - [Starting the simulation](#starting-the-simulation)
-    - [Configure the Simulation](#configure-the-simulation) 
+    - [Configure the simulation](#configure-the-simulation) 
 #### Orbit Debugger
-- [Visualizing the Orbits](#visualizing-the-orbits)
-  - [Create the Orbit Debugger](#create-the-orbit-debugger)
-  - [Virtual Celestial Body Struct](#virtual-celestial-body-struct)
-  - [Virtual Celestial Body Interface](#virtual-celestial-body-interface)
-  - [OrbitDebug Component](#orbitdebug-component)
-  - [OrbitDebug class](#orbitdebug-class)
-  - [OrbitDebug Properties](#orbitdebug-properties)
-  - [OrbitDebug Functions](#orbitdebug-functions)
+- [Visualizing the orbits](#visualizing-the-orbits)
+  - [Create the orbit debugger](#create-the-orbit-debugger)
+    - [Virtual celestial body struct](#virtual-celestial-body-struct)
+    - [Virtual celestial body interface](#virtual-celestial-body-interface)
+    - [OrbitDebug component](#orbitdebug-component)
+    - [OrbitDebug class](#orbitdebug-class)
+      - [Properties](#orbitdebug-properties)
+      - [Functions](#orbitdebug-functions)
+  - [Using the orbit debugger](#using-the-orbit-debugger)
+    - [Create the blueprint](#create-the-orbit-debugger-blueprint)
+    - [Configure the debugger](#configure-the-orbit-debugger)
 - [Resources](#resources)
 
 <a name="introduction"></a>
@@ -1343,7 +1346,7 @@ The `TimeStep` property specifies the time interval used for the orbit.
 The `LineThickness` property specifies the thickness of the lines used for the orbit.
 
 <a name="orbitdebug-getter-and-setter"></a>
-##### *OrbitDebug getter and setter:*
+###### *OrbitDebug getter and setter:*
 
 Now we add the getter and setter functions to get and set the properties.
 The getter and setter functions should look like this:
@@ -1366,7 +1369,7 @@ public:
 The getter and setter functions are defined `inline` to get and set the properties of the orbit debugger.
 
 <a name="orbitdebug-functions"></a>
-##### *OrbitDebug Functions:*
+###### *OrbitDebug Functions:*
 
 Next, we add the interface functions.
 
@@ -1399,6 +1402,215 @@ The function `DrawPaths` visualizes the orbits of the celestial bodies based on 
 The function `CalculateAcceleration` calculates the acceleration of the celestial bodies based on the virtual celestial bodies.
 
 
+Let's start with the constructor in the source file to initialize the `OrbitDrawComponent`.
+The implementation of the function should look like this in the source file `OrbitDebug.cpp`:
+
+```cpp
+#include "OrbitDebug.h"
+
+#include "OrbitDrawComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "SolarSystem/Structs/Universe.h"
+
+AOrbitDebug::AOrbitDebug()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	OrbitDrawComponent = CreateDefaultSubobject<UOrbitDrawComponent>(TEXT("DebugDraw"));
+	RootComponent = OrbitDrawComponent;
+}
+```
+
+The `OrbitDrawComponent` is created as a sub-object and set as the root component.
+
+The implementation of the function `DrawOrbitPaths` should look like this in the source file `OrbitDebug.cpp`:
+
+```cpp
+void AOrbitDebug::DrawOrbitPaths()
+{
+	const UWorld* World = GetWorld();
+	if (World == nullptr) return;
+	
+	TArray<AActor*> Bodies;
+	UGameplayStatics::GetAllActorsOfClass(World, ACelestialBody::StaticClass(), Bodies);
+	if (Bodies.Num() == 0) return;
+	
+	TArray<FVector> DrawPoints;
+	DrawPoints.SetNum(Bodies.Num() * GetNumSteps());
+	TArray<FVirtualBody> VirtualBodies = InitializeVirtualBodies(Bodies);
+
+	SimulateOrbits(VirtualBodies, DrawPoints);
+	DrawPaths(VirtualBodies, DrawPoints, Bodies);
+}
+```
+
+All celestial bodies in the scene are searched for and stored in the array `Bodies`.
+The array `DrawPoints` is initialized,
+and the size is set to the number of celestial bodies multiplied by the number of steps.
+The array `VirtualBodies` is initialized to store the virtual celestial bodies.
+
+The function `SimulateOrbits` is called to simulate the orbits of the celestial bodies.
+The function `DrawPaths` is called to visualize the orbits of the celestial bodies.
+
+The implementation of the function `InitializeVirtualBodies` should look like this in the source file `OrbitDebug.cpp`:
+
+```cpp
+TArray<FVirtualBody> AOrbitDebug::InitializeVirtualBodies(const TArray<AActor*>& Bodies)
+{
+	TArray<FVirtualBody> VirtualBodies;
+	VirtualBodies.Reserve(Bodies.Num());
+	
+	for (const auto& Body : Bodies)
+	{
+		ACelestialBody* CelestialBody = Cast<ACelestialBody>(Body);
+		if (CelestialBody)
+		{
+			VirtualBodies.Add(FVirtualBody(CelestialBody));
+		}
+	}
+	
+	return VirtualBodies;
+}
+```
+
+The function `InitializeVirtualBodies` initializes the virtual orbits based on the real orbits.
+
+The implementation of the function `SimulateOrbits` should look like this in the source file `OrbitDebug.cpp`:
+
+```cpp
+void AOrbitDebug::SimulateOrbits(TArray<FVirtualBody>& VirtualBodies, TArray<FVector>& DrawPoints) const
+{
+    for (int Step = 0; Step < NumSteps; ++Step)
+    {
+        UpdateVelocities(VirtualBodies);
+        UpdatePositions(VirtualBodies, DrawPoints, Step);
+    }
+}
+```
+
+The function `SimulateOrbits` simulates the orbits of the celestial bodies based on the virtual celestial bodies.
+
+The implementation of the function `UpdateVelocities` should look like this in the source file `OrbitDebug.cpp`:
+
+```cpp
+void AOrbitDebug::UpdateVelocities(TArray<FVirtualBody>& VirtualBodies) const
+{
+	for (int i = 0; i < VirtualBodies.Num(); ++i)
+	{
+		VirtualBodies[i].Velocity += CalculateAcceleration(i, VirtualBodies) * GetTimeStep();
+	}
+}
+```
+
+The function `UpdateVelocities` updates the velocities of the virtual celestial bodies based on the acceleration and the time interval.
+
+The implementation of the function `UpdatePositions` should look like this in the source file `OrbitDebug.cpp`:
+
+```cpp
+void AOrbitDebug::UpdatePositions(TArray<FVirtualBody>& VirtualBodies, TArray<FVector>& DrawPoints, const int& Step) const
+{
+	for (int i = 0; i < VirtualBodies.Num(); ++i)
+	{
+		VirtualBodies[i].Location += VirtualBodies[i].Velocity * GetTimeStep();
+		DrawPoints[i * GetNumSteps() + Step] = VirtualBodies[i].Location;
+	}
+}
+```
+
+
+The function `UpdatePositions` updates the positions of the virtual celestial bodies based on the velocities and the time interval.
+
+The implementation of the function `DrawPaths` should look like this in the source file `OrbitDebug.cpp`:
+
+```cpp
+void AOrbitDebug::DrawPaths(const TArray<FVirtualBody>& VirtualBodies, const TArray<FVector>& DrawPoints, TArray<AActor*> Bodies) const
+{
+	for (int i = 0; i < VirtualBodies.Num(); ++i)
+	{
+		const ACelestialBody* CelestialBody = Cast<ACelestialBody>(Bodies[i]);
+		FColor PathColor = CelestialBody->GetLineColor().ToFColor(true);
+		if (CelestialBody == nullptr || CelestialBody->ActorHasTag(CentralBodyTag)) continue;
+		for (int Steps = 0; Steps < GetNumSteps() - 1; ++Steps)
+		{
+			FVector Point = DrawPoints[i * GetNumSteps() + Steps];
+			DrawDebugPoint(GetWorld(), Point, GetLineThickness(), PathColor, false, -1.0f);
+		}
+	}
+}
+```
+
+The `DrawPaths` function visualizes the orbits of the celestial bodies based on the virtual celestial bodies.
+
+It is iterated over all celestial bodies. The color is used by the celestial body, with which the orbit is drawn.
+
+The implementation of the function `CalculateAcceleration` should look like this in the source file `OrbitDebug.cpp`:
+
+```cpp
+FVector AOrbitDebug::CalculateAcceleration(const int& BodyIndex, const TArray<FVirtualBody>& VirtualBodies) const
+{
+	FVector Acceleration = FVector::ZeroVector;
+
+	for (int i = 0; i < VirtualBodies.Num(); ++i)
+	{
+		if(BodyIndex != i)
+		{
+			const FVector Direction = VirtualBodies[i].Location - VirtualBodies[BodyIndex].Location;
+			const float Distance = Direction.Size();
+			const float Force = FUniverse::GravitationalConstant * VirtualBodies[i].Mass * VirtualBodies[BodyIndex].Mass / (Distance * Distance);
+			Acceleration += Direction.GetSafeNormal() * (Force / VirtualBodies[BodyIndex].Mass);
+		}
+	}
+	
+	return Acceleration;
+}
+```
+
+The function `CalculateAcceleration` calculates the acceleration of the celestial bodies based on the virtual celestial bodies.
+
+The acceleration is calculated for each celestial body by using the direction, distance and gravitational force.
+
+
+<a name="using-the-orbit-debugger"></a>
+### Using the Orbit Debugger:
+
+<a name="create-the-orbit-debugger-blueprint"></a>
+##### *Create the Orbit Debugger Blueprint:*
+
+To use the debugger,
+we create a new blueprint by right-clicking on the `Blueprints` folder and then clicking on `Blueprint Class`.
+We search for `AOrbitDebug` and select the class as parent class.
+
+![Create Orbit Debugger](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/create-debugger-bp.png)
+
+We can now place the blueprint in the scene and configure the parameters in the editor as required.
+
+![Place Orbit Debugger](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/set-debugger-bp.png)
+
+
+<a name="configure-the-orbit-debugger"></a>
+##### *Configure the Orbit Debugger:*
+
+The `bDrawOrbitPaths` property is used to switch the orbit visualization on and off.
+![Configure orbit debugger 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/earth-orbit-entry.png)
+
+The `NumSteps` property specifies the number of points that are calculated for the orbit.
+![Configure orbit debugger 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/earth-orbit-numsteps.png)
+
+The `TimeStep` property specifies the time interval used for the orbit.
+![Configure orbit debugger 3](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/earth-orbit-timestep.png)
+
+The `LineThickness` property specifies the thickness of the lines used for the orbit.
+![Configure orbit debugger 4](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/earth-orbit-linethickness.png)
+
+Again to visualize the `TimeStep` in combination with the `LineThickness`.
+![Configure Orbit Debugger 5](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/earth-orbit-linethickness-timestep.png)
+
+Examples of how the debugger can be used.
+
+![Orbit-Debugger example 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/solarsystem-orbit1.png)
+![Orbit debugger example 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/solarsystem-orbit2.png)
+
+It makes perfect sense to experiment with the celestial body values (radius, mass and initial velocity) and change them.
+The calculations in the [Resources](#resources) can help to create a realistic simulation.
 
 ------------------------------------------------------------------------------------------------------------
 <a name="resources"></a>

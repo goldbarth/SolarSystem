@@ -51,6 +51,9 @@ Hinweis: Das Projekt ist in laufender Entwicklung und kann Änderungen und Aktua
     - [OrbitDebug Klasse](#orbitdebug-klasse)
     - [OrbitDebug Properties](#orbitdebug-properties)
     - [OrbitDebug Funktionen](#orbitdebug-funktionen)
+  - [Orbit-Debugger verwenden](#orbit-debugger-verwenden)
+    - [Orbit-Debugger erstellen](#orbit-debugger-erstellen)
+    - [Orbit-Debugger konfigurieren](#orbit-debugger-konfigurieren)
 - [Einsatzmittel](#einsatzmittel)
 
 <a name="einführung"></a>
@@ -1338,7 +1341,7 @@ Die `TimeStep`-Property gibt das Zeitintervall an, das für die Umlaufbahn verwe
 Die `LineThickness`-Property gibt die Dicke der Linien an, die für die Umlaufbahn verwendet wird.
 
 <a name="orbitdebug-getter-und-setter"></a>
-##### *OrbitDebug Getter und Setter:*
+###### *OrbitDebug Getter und Setter:*
 
 Jetzt fügen wir die Getter- und Setter-Funktionen hinzu, um die Properties zu erhalten und zu setzen.
 Die Getter- und Setter-Funktionen sollten folgendermaßen aussehen:
@@ -1361,7 +1364,7 @@ public:
 Die Getter- und Setter-Funktionen sind `inline` und geben die Properties zurück bzw. setzen die Properties.
 
 <a name="orbit-debug-funktionen"></a>
-##### *OrbitDebug Funktionen:*
+###### *OrbitDebug Funktionen:*
 
 Als Nächstes fügen wir die Interface-Funktionen hinzu.
 
@@ -1394,7 +1397,210 @@ Die Funktion `DrawPaths` visualisiert die Umlaufbahnen der Himmelskörper basier
 Die Funktion `CalculateAcceleration` berechnet die Beschleunigung der Himmelskörper basierend auf den virtuellen Himmelskörpern.
 
 
+Fangen wir mit dem Konstruktor in der Quelldatei an, um die `OrbitDrawComponent` zu initialisieren.
+Die Implementierung der Funktion sollte in der Quelldatei `OrbitDebug.cpp` wie folgt aussehen:
 
+```cpp
+#include "OrbitDebug.h"
+
+#include "OrbitDrawComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "SolarSystem/Structs/Universe.h"
+
+AOrbitDebug::AOrbitDebug()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	OrbitDrawComponent = CreateDefaultSubobject<UOrbitDrawComponent>(TEXT("DebugDraw"));
+	RootComponent = OrbitDrawComponent;
+}
+```
+
+Die `OrbitDrawComponent` wird als Subobjekt erstellt und als Root-Komponente gesetzt.
+
+Die Implementierung der Funktion `DrawOrbitPaths` sollte in der Quelldatei `OrbitDebug.cpp` wie folgt aussehen:
+
+```cpp
+void AOrbitDebug::DrawOrbitPaths()
+{
+	const UWorld* World = GetWorld();
+	if (World == nullptr) return;
+	
+	TArray<AActor*> Bodies;
+	UGameplayStatics::GetAllActorsOfClass(World, ACelestialBody::StaticClass(), Bodies);
+	if (Bodies.Num() == 0) return;
+	
+	TArray<FVector> DrawPoints;
+	DrawPoints.SetNum(Bodies.Num() * GetNumSteps());
+	TArray<FVirtualBody> VirtualBodies = InitializeVirtualBodies(Bodies);
+
+	SimulateOrbits(VirtualBodies, DrawPoints);
+	DrawPaths(VirtualBodies, DrawPoints, Bodies);
+}
+```
+
+Es werden alle Himmelskörper in der Scene gesucht und in dem Array `Bodies` gespeichert.
+Das Array `DrawPoints` wird initialisiert und die größe wird auf die Anzahl der Himmelskörper multipliziert mit der Anzahl der Schritte gesetzt.
+Das Array `VirtualBodies` wird initialisiert, um die virtuellen Himmelskörper zu speichern.
+
+Die Funktion `SimulateOrbits` wird aufgerufen, um die Umlaufbahnen der Himmelskörper zu simulieren.
+Die Funktion `DrawPaths` wird aufgerufen, um die Umlaufbahnen der Himmelskörper zu visualisieren.
+
+Die Implementierung der Funktion `InitializeVirtualBodies` sollte in der Quelldatei `OrbitDebug.cpp` wie folgt aussehen:
+
+```cpp
+TArray<FVirtualBody> AOrbitDebug::InitializeVirtualBodies(const TArray<AActor*>& Bodies)
+{
+	TArray<FVirtualBody> VirtualBodies;
+	VirtualBodies.Reserve(Bodies.Num());
+	
+	for (const auto& Body : Bodies)
+	{
+		ACelestialBody* CelestialBody = Cast<ACelestialBody>(Body);
+		if (CelestialBody)
+		{
+			VirtualBodies.Add(FVirtualBody(CelestialBody));
+		}
+	}
+	
+	return VirtualBodies;
+}
+```
+
+Die Funktion `InitializeVirtualBodies` initialisiert die virtuellen Himmelskörper basierend auf den echten Himmelskörpern.
+
+Die Implementierung der Funktion `SimulateOrbits` sollte in der Quelldatei `OrbitDebug.cpp` wie folgt aussehen:
+
+```cpp
+void AOrbitDebug::SimulateOrbits(TArray<FVirtualBody>& VirtualBodies, TArray<FVector>& DrawPoints) const
+{
+    for (int Step = 0; Step < NumSteps; ++Step)
+    {
+        UpdateVelocities(VirtualBodies);
+        UpdatePositions(VirtualBodies, DrawPoints, Step);
+    }
+}
+```
+
+Die Funktion `SimulateOrbits` simuliert die Umlaufbahnen der Himmelskörper basierend auf den virtuellen Himmelskörpern.
+
+Die Implementierung der Funktion `UpdateVelocities` sollte in der Quelldatei `OrbitDebug.cpp` wie folgt aussehen:
+
+```cpp
+void AOrbitDebug::UpdateVelocities(TArray<FVirtualBody>& VirtualBodies) const
+{
+	for (int i = 0; i < VirtualBodies.Num(); ++i)
+	{
+		VirtualBodies[i].Velocity += CalculateAcceleration(i, VirtualBodies) * GetTimeStep();
+	}
+}
+```
+
+Die Funktion `UpdateVelocities` aktualisiert die Geschwindigkeiten der virtuellen Himmelskörper basierend auf der Beschleunigung und dem Zeitintervall.
+
+Die Implementierung der Funktion `UpdatePositions` sollte in der Quelldatei `OrbitDebug.cpp` wie folgt aussehen:
+
+```cpp
+void AOrbitDebug::UpdatePositions(TArray<FVirtualBody>& VirtualBodies, TArray<FVector>& DrawPoints, const int& Step) const
+{
+	for (int i = 0; i < VirtualBodies.Num(); ++i)
+	{
+		VirtualBodies[i].Location += VirtualBodies[i].Velocity * GetTimeStep();
+		DrawPoints[i * GetNumSteps() + Step] = VirtualBodies[i].Location;
+	}
+}
+```
+
+Die Funktion `UpdatePositions` aktualisiert die Positionen der virtuellen Himmelskörper basierend auf den Geschwindigkeiten und dem Zeitintervall.
+
+Die Implementierung der Funktion `DrawPaths` sollte in der Quelldatei `OrbitDebug.cpp` wie folgt aussehen:
+
+```cpp
+void AOrbitDebug::DrawPaths(const TArray<FVirtualBody>& VirtualBodies, const TArray<FVector>& DrawPoints, TArray<AActor*> Bodies) const
+{
+	for (int i = 0; i < VirtualBodies.Num(); ++i)
+	{
+		const ACelestialBody* CelestialBody = Cast<ACelestialBody>(Bodies[i]);
+		FColor PathColor = CelestialBody->GetLineColor().ToFColor(true);
+		if (CelestialBody == nullptr || CelestialBody->ActorHasTag(CentralBodyTag)) continue;
+		for (int Steps = 0; Steps < GetNumSteps() - 1; ++Steps)
+		{
+			FVector Point = DrawPoints[i * GetNumSteps() + Steps];
+			DrawDebugPoint(GetWorld(), Point, GetLineThickness(), PathColor, false, -1.0f);
+		}
+	}
+}
+```
+
+Die Funktion `DrawPaths` visualisiert die Umlaufbahnen der Himmelskörper basierend auf den virtuellen Himmelskörpern.
+
+Es wird über alle Himmelskörper iteriert, die Farbe wird vom Himmelskörper genutzt, womit die Umlaufbahn gezeichnet wird.
+
+Die Implementierung der Funktion `CalculateAcceleration` sollte in der Quelldatei `OrbitDebug.cpp` wie folgt aussehen:
+
+```cpp
+FVector AOrbitDebug::CalculateAcceleration(const int& BodyIndex, const TArray<FVirtualBody>& VirtualBodies) const
+{
+	FVector Acceleration = FVector::ZeroVector;
+
+	for (int i = 0; i < VirtualBodies.Num(); ++i)
+	{
+		if(BodyIndex != i)
+		{
+			const FVector Direction = VirtualBodies[i].Location - VirtualBodies[BodyIndex].Location;
+			const float Distance = Direction.Size();
+			const float Force = FUniverse::GravitationalConstant * VirtualBodies[i].Mass * VirtualBodies[BodyIndex].Mass / (Distance * Distance);
+			Acceleration += Direction.GetSafeNormal() * (Force / VirtualBodies[BodyIndex].Mass);
+		}
+	}
+	
+	return Acceleration;
+}
+```
+
+Die Funktion `CalculateAcceleration` berechnet die Beschleunigung der Himmelskörper basierend auf den virtuellen Himmelskörpern.
+
+Die Beschleunigung wird für jeden Himmelskörper berechnet, indem die Richtung, die Distanz und die Gravitationskraft verwendet wird.
+
+<a name="orbit-debuger-verwenden"></a>
+### Orbit-Debugger verwenden:
+
+<a name="orbit-debugger-erstellen"></a>
+##### *Orbit-Debugger erstellen:*
+
+Um den Debugger zu verwenden, erstellen wir eine neues Blueprint, indem wir mit Rechtsklick auf den Ordner `Blueprints` und dann auf `Blueprint Class` klicken.
+Wir suchen nach `AOrbitDebug` und wählen die Klasse als Parent Class aus.
+
+![Orbit-Debugger erstellen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/create-debugger-bp.png)
+
+Das Blueprint können wir jetzt in der Szene platzieren und die Parameter im Editor nach Belieben konfigurieren.
+
+![Orbit-Debugger platzieren](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/set-debugger-bp.png)
+
+<a name="orbit-debugger-konfigurieren"></a>
+##### *Orbit-Debugger konfigurieren:*
+
+Die `bDrawOrbitPaths`-Property wird verwendet, um die Orbit-Visualisierung ein- und auszuschalten.
+![Orbit-Debugger konfigurieren 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/earth-orbit-entry.png)
+
+Die `NumSteps`-Property gibt die Anzahl der Punkte an, die für die Umlaufbahn berechnet werden.
+![Orbit-Debugger konfigurieren 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/earth-orbit-numsteps.png)
+
+Die `TimeStep`-Property gibt das Zeitintervall an, das für die Umlaufbahn verwendet wird.
+![Orbit-Debugger konfigurieren 3](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/earth-orbit-timestep.png)
+
+Die `LineThickness`-Property gibt die Dicke der Linien an, die für die Umlaufbahn verwendet wird.
+![Orbit-Debugger konfigurieren 4](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/earth-orbit-linethickness.png)
+
+Nochmal zur Visualisierung des `TimeStep` in Kombination mit der `LineThickness`.
+![Orbit-Debugger konfigurieren 5](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/earth-orbit-linethickness-timestep.png)
+
+Beispiele wie der Debugger genutzt werden kann.
+
+![Orbit-Debugger Beispiel 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/solarsystem-orbit1.png)
+![Orbit-Debugger Beispiel 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/solarsystem-orbit2.png)
+
+Es macht absolut Sinn mit den Himmelskörper Werten (Radius, Masse und Initial-Geschwindigkeit) zu experimentieren und sie zu verändern. 
+Die Kalkulationen in den [Einsatzmitteln](#einsatzmittel) können dabei helfen eine realistische Simulation zu erstellen.
 
 ------------------------------------------------------------------------------------------------------------
 <a name="einsatzmittel"></a>
