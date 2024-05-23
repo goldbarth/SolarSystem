@@ -11,6 +11,7 @@ Hinweis: Das Projekt ist in laufender Entwicklung und kann Änderungen und Aktua
 - [Einführung](#einführung)
 - [Eigenschaften](#eigenschaften)
 - [Erste Schritte](#erste-schritte)
+#### Grundlegende Klassen
 - [Grundlegende Klassen Implementieren](#grundlegende-klassen-implementieren)
   - [CelestialBody Klasse](#celestialbody-klasse)
     - [Properties](#celestialbody-properties)
@@ -28,6 +29,7 @@ Hinweis: Das Projekt ist in laufender Entwicklung und kann Änderungen und Aktua
     - [Properties](#orbitsimulation-properties)
     - [Funktionen](#orbitsimulation-funktionen)
     - [Erweiterung der Game-Mode Klasse](#erweiterung-der-game-mode-klasse)
+#### Simulation erstellen
 - [Erstellen der Simulation](#erstellen-der-simulation)
   - [Level erstellen](#level-erstellen)
   - [GameMode hinzufügen](#gamemode-hinzufügen)
@@ -40,14 +42,15 @@ Hinweis: Das Projekt ist in laufender Entwicklung und kann Änderungen und Aktua
       - [Erde erstellen](#erde-erstellen)
   - [Simulation starten](#simulation-starten)
     - [Simulation konfigurieren](#simulation-konfigurieren)
-  - [Visualisierung der Orbits](#visualisierung-der-orbits)
-    - [Orbit-Debugger erstellen](#orbit-debugger-erstellen)
-      - [Virtuelle Himmelskörper Struktur](#virtuelle-himmelskörper-struktur)
-      - [Virtuelle Himmelskörper Interface](#virtuelle-himmelskörper-interface)
-      - [OrbitDebug Komponente](#orbitdebug-komponente)
-      - [OrbitDebug Klasse](#orbitdebug-klasse)
-      - [OrbitDebug Properties](#orbitdebug-properties)
-      - [OrbitDebug Funktionen](#orbitdebug-funktionen)
+#### Orbit Debugger
+- [Visualisierung der Orbits](#visualisierung-der-orbits)
+  - [Orbit-Debugger erstellen](#orbit-debugger-erstellen)
+    - [Virtuelle Himmelskörper Struktur](#virtuelle-himmelskörper-struktur)
+    - [Virtuelle Himmelskörper Interface](#virtuelle-himmelskörper-interface)
+    - [OrbitDebug Komponente](#orbitdebug-komponente)
+    - [OrbitDebug Klasse](#orbitdebug-klasse)
+    - [OrbitDebug Properties](#orbitdebug-properties)
+    - [OrbitDebug Funktionen](#orbitdebug-funktionen)
 - [Einsatzmittel](#einsatzmittel)
 
 <a name="einführung"></a>
