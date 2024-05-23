@@ -1596,9 +1596,9 @@ Nochmal zur Visualisierung des `TimeStep` in Kombination mit der `LineThickness`
 
 Beispiele wie der Debugger genutzt werden kann.
 
-![Orbit-Debugger Beispiel 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/solarsystem-orbit1.png)
+![Orbit-Debugger Beispiel 1](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/solarsystem-orbits1.png)
 
-![Orbit-Debugger Beispiel 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/solarsystem-orbit2.png)
+![Orbit-Debugger Beispiel 2](https://github.com/goldbarth/SolarSystem/blob/goldbarth/media/images/solarsystem-orbits2.png)
 
 Es macht absolut Sinn mit den Himmelskörper Werten (Radius, Masse und Initial-Geschwindigkeit) zu experimentieren und sie zu verändern. 
 Die Kalkulationen in den [Einsatzmitteln](#einsatzmittel) können dabei helfen eine realistische Simulation zu erstellen.
