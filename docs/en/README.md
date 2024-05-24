@@ -88,12 +88,12 @@ Much can still change in development and will be documented.
 <a name="getting-started"></a>
 ## Getting Started
 
-##### Creating a New Project in Unreal Engine 5.3.2
+#### Creating a New Project in Unreal Engine 5.3.2
 
 1. Launch Unreal Engine and select "Blank" under Games as the project template and C++ as the project defaults.
 2. Choose a location for the project, select a name, and click "Create Project"
 
-##### Creating a New C++ Class
+#### Creating a New C++ Class
 
 1. In the engine, click on "Tools" → "New C++ Class"
 2. Choose a class derived from a base class, e.g., `AActor` or `None` for an empty class, useful for utility classes.
@@ -110,9 +110,9 @@ Note 2: The engine automatically generates the header and source files for the n
 Compiling the class creates the binary files and makes the class available in the editor. In Unreal, it is important to recompile the class after each change.
 
 <a name="implement-basic-classes"></a>
-##### Implement Basic Classes
+## Implement Basic Classes
 
-###### CelestialBody Class
+#### CelestialBody Class
 
 First, we create the class that will serve as the basis for all celestial bodies in the solar system.
 To do this, we create a new C++ class derived from `AActor` and add the necessary properties and functions.
@@ -143,7 +143,7 @@ We will deal with the source file `CelestialBody.cpp` later.
 
 
 <a name="celestialbody-properties"></a>
-###### *CelestialBody Properties:*
+##### *CelestialBody Properties:*
 
 For now, let's add the properties to define the celestial bodies.
 
@@ -198,7 +198,7 @@ protected:
 
 
 <a name="mesh-initialization"></a>
-###### *Mesh Initialization:*
+##### *Mesh Initialization:*
 
 The mesh component is initialized in the constructor.
 
@@ -224,7 +224,7 @@ We set the gravity settings to `false` because we will implement our own gravity
 
 
 <a name="getter-and-setter-functions"></a>
-###### *Getter and setter functions:*
+##### *Getter and setter functions:*
 
 To access and change the properties of the celestial bodies, we create getter and setter functions.
 
@@ -261,7 +261,7 @@ The function `SetMass` sets the mass of the celestial body and overwrites the ma
 
 
 <a name="physics-functions"></a>
-###### *Physics functions:*
+##### *Physics functions:*
 
 To implement the physics simulation, we create functions that calculate the gravitational simulation and the motion of the celestial bodies.
 
@@ -336,7 +336,7 @@ void ACelestialBody::BeginPlay()
 ------------------------------------------------------------------------------------------------------------
 
 <a name="gravitational-constant"></a>
-##### Gravitational Constant
+#### Gravitational Constant
 
 <sup>*</sup> We define the gravitational constant `G` and the structure `FUniverse` in the newly created header file `Universe.h`.
 
@@ -362,7 +362,7 @@ For the simulation, we use a fixed time step size of `0.1f` to control the simul
 ------------------------------------------------------------------------------------------------------------
 
 <a name="celestialbodyregistry-class"></a>
-##### CelestialBodyRegistry Class
+#### CelestialBodyRegistry Class
 
 Next, we create the class that registers and manages the celestial bodies to use them in the simulation.
 To do this, we create a new C++ class derived from `AActor` and add the necessary properties and functions.
@@ -387,7 +387,7 @@ public:
 ```
 
 <a name="celestialbodyregistry-delegate"></a>
-###### *CelestialBodyRegistry Delegate:*
+##### *CelestialBodyRegistry Delegate:*
 
 The delegate `FCelestialObjectAddedDelegate` is defined to enable the addition of celestial objects.
 
@@ -426,7 +426,7 @@ and is initialized in the constructor to enable the addition of celestial bodies
 We can use the delegate to register and manage celestial bodies in another class.
 
 <a name="celestialbodyregistry-properties"></a>
-###### *CelestialBodyRegistry Properties:*
+##### *CelestialBodyRegistry Properties:*
 
 Now we add the properties to register the celestial bodies.
 
@@ -462,7 +462,7 @@ The include directive should look like this in the source file
 ```
 
 <a name="celestialbodyregistry-functions"></a>
-###### *CelestialBodyRegistry Functions:*
+##### *CelestialBodyRegistry Functions:*
 
 Now we add the functions to register and manage the celestial bodies.
 
@@ -517,7 +517,7 @@ In the `RemoveCelestialObject` function, the celestial object is removed if it i
 ------------------------------------------------------------------------------------------------------------
 
 <a name="game-mode-class"></a>
-##### Game-Mode Class
+#### Game-Mode Class
 
 To extend the classes,
 we must first create a GameMode class in which we control the simulation and register and manage the celestial bodies.
@@ -606,7 +606,7 @@ Now we can use the GameMode class to control the simulation and register and man
 ------------------------------------------------------------------------------------------------------------
 
 <a name="Expanding-the-CelestialBody-class"></a>
-##### Expanding the CelestialBody Class
+#### Expanding the CelestialBody Class
 
 To use the celestial bodies in the simulation,
 we need to extend the `CelestialBody` class to enable the registration and management of the celestial bodies.
@@ -705,7 +705,7 @@ protected:
 We will deal with the source file `OrbitSimulation.cpp` later.
 
 <a name="orbitsimulation-properties"></a>
-###### *OrbitSimulation Properties:*
+##### *OrbitSimulation Properties:*
 
 Now let's add the properties to define the simulation.
 
@@ -739,7 +739,7 @@ The timescale can be edited in the blueprint so that we can speed up or slow dow
 The `CelestialBodyRegistry` property is used to register and manage the celestial bodies.
 
 <a name="orbitsimulation-functions"></a>
-###### *OrbitSimulation Functions:*
+##### *OrbitSimulation Functions:*
 
 Now we add the functions to control the simulation and calculate the orbits.
 
@@ -896,6 +896,8 @@ By setting the scalable DeltaTime, the simulation can be controlled to increase 
 
 Now we can calculate the orbits of the celestial bodies and create a simulation.
 
+------------------------------------------------------------------------------------------------------------
+
 <a name="expanding-the-game-mode-class"></a>
 #### Expanding the Game-Mode Class
 
@@ -988,7 +990,7 @@ The Auto Exposure setting ensures that the brightness remains the same in every 
 To use the celestial bodies in the simulation, we need a basic blueprint and material for the celestial bodies.
 
 <a name="creating-the-base-blueprint"></a>
-###### *Creating the Base Blueprint:*
+##### *Creating the Base Blueprint:*
 
 Let's create a base blueprint for the celestial bodies
 by right-clicking on the Blueprints folder we created earlier and then clicking on Blueprint Class.
@@ -1012,7 +1014,7 @@ This means that we do not have to create a new blueprint for each celestial body
 but can use the basic blueprint and configure the properties in the editor.
 
 <a name="creating-the-base-material"></a>
-###### *Creating the Base Material:*
+##### *Creating the Base Material:*
 
 Let's
 create a base material for the celestial bodies
@@ -1329,7 +1331,7 @@ The header files for the virtual celestial bodies, the interface and the actor c
 In addition, `IVirtualBody` is implemented as an interface for the virtual celestial bodies.
 
 <a name="orbitdebug-properties"></a>
-###### *OrbitDebug Properties:*
+##### *OrbitDebug Properties:*
 
 Now let's add the properties to visualize the orbits of the celestial bodies.
 We need the following properties for this:
@@ -1373,7 +1375,7 @@ The `TimeStep` property specifies the time interval used for the orbit.
 The `LineThickness` property specifies the thickness of the lines used for the orbit.
 
 <a name="orbitdebug-getter-and-setter"></a>
-###### *OrbitDebug getter and setter:*
+##### *OrbitDebug getter and setter:*
 
 Now we add the getter and setter functions to get and set the properties.
 The getter and setter functions should look like this:
@@ -1396,7 +1398,7 @@ public:
 The getter and setter functions are defined `inline` to get and set the properties of the orbit debugger.
 
 <a name="orbitdebug-functions"></a>
-###### *OrbitDebug Functions:*
+##### *OrbitDebug Functions:*
 
 Next, we add the interface functions.
 

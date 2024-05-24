@@ -52,7 +52,7 @@ Hinweis: Das Projekt ist in laufender Entwicklung und kann Änderungen und Aktua
     - [OrbitDebug Properties](#orbitdebug-properties)
     - [OrbitDebug Funktionen](#orbitdebug-funktionen)
   - [Orbit-Debugger verwenden](#orbit-debugger-verwenden)
-    - [Orbit-Debugger erstellen](#orbit-debugger-erstellen)
+    - [Orbit-Debugger Blueprint erstellen](#orbit-debugger-blueprint-erstellen)
     - [Orbit-Debugger konfigurieren](#orbit-debugger-konfigurieren)
 - [Einsatzmittel](#einsatzmittel)
 
@@ -87,12 +87,12 @@ Eventuell wird z.B. mit einem Raumfahrzeug und weiterer Physik erweitert, um ein
 <a name="erste-schritte"></a>
 ## Erste Schritte
 
-##### Erstellen eines neuen Projekts in der Unreal Engine 5.3.2
+#### Erstellen eines neuen Projekts in der Unreal Engine 5.3.2
 
 1. Starte Unreal Engine und wähle unter Games "Blank" als Projektvorlage und C++ als Projekt Defaults.
 2. Wähle einen Speicherort für das Projekt, wähle einen Namen und klicke auf "Create Project".
 
-##### Erstellen einer neuen C++ Klasse
+#### Erstellen einer neuen C++ Klasse
 
 1. In der Engine klicke auf "Tools" → "New C++ Class".
 2. Wähle eine Klasse, die von einer Basisklasse abgeleitet ist, z.B. `AActor` oder `None` für eine leere Klasse, praktisch für Utility-Klassen.
@@ -111,10 +111,10 @@ Das Kompilieren der Klasse erstellt die Binärdateien und macht die Klasse im Ed
 ------------------------------------------------------------------------------------------------------------
 
 <a name="grundlegende-klassen-implementieren"></a>
-### Grundlegende Klassen Implementieren
+## Grundlegende Klassen Implementieren
 
 <a name="celestialbody-klasse"></a>
-##### CelestialBody Klasse
+#### CelestialBody Klasse
 
 Als Erstes erstellen wir die Klasse, die als Grundlage für alle Himmelskörper im Sonnensystem dienen wird.
 Dazu erstellen wir eine neue C++ Klasse, die von `AActor` abgeleitet ist und fügen die notwendigen Properties und Funktionen hinzu.
@@ -145,7 +145,7 @@ Um die Quelldatei `CelestialBody.cpp` kümmern wir uns später.
 
 
 <a name="celestialbody-properties"></a>
-###### *CelestialBody Properties:*
+##### *CelestialBody Properties:*
 
 Jetzt fügen wir erstmal die Properties hinzu, um die Himmelskörper zu definieren.
 
@@ -200,7 +200,7 @@ protected:
 
 
 <a name="mesh-initialisierung"></a>
-###### *Mesh Initialisierung:*
+##### *Mesh Initialisierung:*
 
 Die Mesh-Komponente wird im Konstruktor initialisiert.
 
@@ -226,7 +226,7 @@ Wir setzen die Physiksimulation auf `true`, damit die Komponente Physiksimulatio
 Wir setzen die Gravitationseinstellungen auf `false`, da wir unsere eigene Gravitationssimulation implementieren werden.
 
 <a name="getter-und-setter-funktionen"></a>
-###### *Getter- und Setter-Funktionen:*
+##### *Getter- und Setter-Funktionen:*
 
 Um auf die Properties der Himmelskörper zuzugreifen und sie zu ändern, erstellen wir Getter- und Setter-Funktionen.
 
@@ -262,7 +262,7 @@ Die Funktion `SetMass` setzt die Masse des Himmelskörpers und überschreibt die
 
 
 <a name="physikfunktionen"></a>
-###### *Physikfunktionen:*
+##### *Physikfunktionen:*
 
 Um die Physiksimulation zu implementieren, erstellen wir Funktionen, die die Gravitationssimulation und die Bewegung der Himmelskörper berechnen.
 
@@ -337,7 +337,7 @@ void ACelestialBody::BeginPlay()
 ------------------------------------------------------------------------------------------------------------
 
 <a name="gravitationskonstante"></a>
-##### Gravitationskonstante
+#### Gravitationskonstante
 
 <sup>*</sup> Die Gravitationskonstante `G` und die Struktur `FUniverse` definieren wir in der neu erstellten Header-Datei `Universe.h`.
 
@@ -365,7 +365,7 @@ Für die Simulation verwenden wir eine feste Zeitschrittgröße von `0.1f`, um d
 ------------------------------------------------------------------------------------------------------------
 
 <a name="celestialbodyregistry-klasse"></a>
-##### CelestialBodyRegistry Klasse
+#### CelestialBodyRegistry Klasse
 
 Als Nächstes erstellen wir die Klasse, die die Himmelskörper registriert und verwaltet, um sie in der Simulation zu verwenden.
 Dazu erstellen wir eine neue C++ Klasse, die von `AActor` abgeleitet ist und fügen die notwendigen Properties und Funktionen hinzu.
@@ -390,7 +390,7 @@ public:
 ```
 
 <a name="celestialbodyregistry-delegaten"></a>
-###### *CelestialBodyRegistry Delegaten:*
+##### *CelestialBodyRegistry Delegaten:*
 
 Der Delegat `FCelestialObjectAddedDelegate` wird definiert, um das Hinzufügen von Himmelskörpern zu ermöglichen.
 
@@ -428,7 +428,7 @@ Der Delegat `OnCelestialBodyAdded` ist im Blueprint zugänglich und wird im Kons
 Wir können den Delegaten verwenden, um Himmelskörper in einer anderen Klasse zu registrieren und zu verwalten.
 
 <a name="celestialbodyregistry-properties"></a>
-###### *CelestialBodyRegistry Properties:*
+##### *CelestialBodyRegistry Properties:*
 
 Jetzt fügen wir erstmal die Properties hinzu, um die Himmelskörper zu registrieren.
 
@@ -463,7 +463,7 @@ Die Include-Direktive sollte in der Quelldatei `CelestialBodyRegistry.h` (evtl. 
 ```
 
 <a name="celestialbodyregistry-functionen"></a>
-###### *CelestialBodyRegistry Funktionen:*
+##### *CelestialBodyRegistry Funktionen:*
 
 Jetzt fügen wir die Funktionen hinzu, um die Himmelskörper zu registrieren und zu verwalten.
 
@@ -516,7 +516,7 @@ In der Funktion `RemoveCelestialObject` wird der Himmelskörper entfernt, wenn e
 ------------------------------------------------------------------------------------------------------------
 
 <a name="game-mode-klasse"></a>
-##### Game-Mode Klasse
+#### Game-Mode Klasse
 
 Um die Klassen zu erweitern, müssen wir erstmal eine GameMode-Klasse erstellen, in dem wir die Simulation steuern und die Himmelskörper registrieren und verwalten.
 In der GameMode-Klasse initialisieren wir die Simulation und fügen die Himmelskörper hinzu, um die Orbits zu berechnen und die Simulation zu steuern.
@@ -600,9 +600,8 @@ Jetzt können wir die GameMode-Klasse verwenden, um die Simulation zu steuern un
 
 ------------------------------------------------------------------------------------------------------------
 
-
 <a name="erweiterung-celestialbody-klasse"></a>
-##### Erweiterung der CelestialBody Klasse
+#### Erweiterung der CelestialBody Klasse
 
 Um die Himmelskörper in der Simulation zu verwenden, müssen wir die `CelestialBody`-Klasse erweitern, um die Registrierung und Verwaltung der Himmelskörper zu ermöglichen.
 
@@ -698,7 +697,7 @@ protected:
 Um die Quelldatei `OrbitSimulation.cpp` kümmern wir uns später.
 
 <a name="orbit-simulation-properties"></a>
-###### *OrbitSimulation Properties:*
+##### *OrbitSimulation Properties:*
 
 Jetzt fügen wir erstmal die Properties hinzu, um die Simulation zu definieren.
 
@@ -732,7 +731,7 @@ Die Zeitskala ist im Blueprint editierbar, damit wir die Simulation beschleunige
 Die `CelestialBodyRegistry`-Property wird verwendet, um die Himmelskörper zu registrieren und zu verwalten.
 
 <a name="orbit-simulation-functions"></a>
-###### *OrbitSimulation Funktionen:*
+##### *OrbitSimulation Funktionen:*
 
 Jetzt fügen wir die Funktionen hinzu, um die Simulation zu steuern und die Orbits zu berechnen.
 
@@ -885,6 +884,8 @@ Durch das Setzten der skalierbaren DeltaTime kann die Simulation gesteuert werde
 
 Jetzt können wir die Orbits der Himmelskörper berechnen und daraus eine Simulation erstellen.
 
+------------------------------------------------------------------------------------------------------------
+
 <a name="erweiterung-der-game-mode-klasse"></a>
 #### Erweiterung der Game-Mode Klasse
 
@@ -970,7 +971,7 @@ Die eingestellte Auto-Exposure sorgt dafür, dass die Helligkeit in jeder Szener
 Um die Himmelskörper in der Simulation zu verwenden, brauchen wir ein Basis-Blueprint und Material für die Himmelskörper.
 
 <a name = "basis-blueprint-erstellen"></a>
-###### *Basis Blueprint erstellen:*
+##### *Basis Blueprint erstellen:*
 
 Erstellen wir ein Basis-Blueprint für die Himmelskörper, indem wir mit Rechtsklick auf den Ordner `Blueprints` den wir vorher erstellen und dann auf `Blueprint Class` klicken.
 
@@ -990,7 +991,7 @@ Zuletzt deaktivieren wir `Enable Gravity` da wir unsere eigene Gravitationssimul
 So müssen wir nicht für jeden Himmelskörper ein neues Blueprint erstellen, sondern können das Basis Blueprint verwenden und die Eigenschaften im Editor konfigurieren.
 
 <a name = "basis-material-erstellen"></a>
-###### *Basis Material erstellen:*
+##### *Basis Material erstellen:*
 
 Erstellen wir ein Basis-Material für die Himmelskörper, indem wir mit Rechtsklick auf den Ordner `Materials` den wir vorher erstellen und dann auf `Material` klicken.
 Wir benennen das Material z.B. `M_CelestialBodySurfaceBase`.
@@ -1079,9 +1080,6 @@ platzieren wir die Erde im Editor, indem wir sie in die Szene ziehen und die Pos
 Hinweis: Die Position, Masse und Initialgeschwindigkeit der Erde ist wichtig, damit die Orbits der Himmelskörper korrekt berechnet werden.
 Die Eigenschaftsberechnungen können unter `Einsatzmittel` nachgelesen werden.
 
-
-
-
 ------------------------------------------------------------------------------------------------------------
 
 <a name = "simulation-starten"></a>
@@ -1115,7 +1113,7 @@ Da wir die Umlaufbahnen der Himmelskörper um die Sonne berechnen, aber die Umla
 ist es sinnvoll einen Orbit-Visualisierungseffekt hinzuzufügen bzw. einen Debugger zu erstellen.
 
 <a name="orbit-debugger-erstellen"></a>
-#### *Orbit-Debugger erstellen:*
+#### *Orbit Debugger erstellen:*
 
 Für den Debugger brauchen wir vorher noch eine Struktur für die virtuellen Himmelskörper, damit wir nicht die echten Himmelskörper verwenden,
 ein Interface für die virtuellen Himmelskörper, um die Eigenschaften der Himmelskörper zu erhalten und in der Actor-Komponente zu setzen.
@@ -1298,7 +1296,7 @@ Außerdem wird `IVirtualBody` als Interface für die virtuellen Himmelskörper i
 
 
 <a name="orbit-debug-properties"></a>
-###### *OrbitDebug Properties:*
+##### *OrbitDebug Properties:*
 
 Jetzt fügen wir erstmal die Properties hinzu, um die Umlaufbahnen der Himmelskörper zu visualisieren.
 Dafür brauchen wir folgende Properties:
@@ -1342,7 +1340,7 @@ Die `TimeStep`-Property gibt das Zeitintervall an, das für die Umlaufbahn verwe
 Die `LineThickness`-Property gibt die Dicke der Linien an, die für die Umlaufbahn verwendet wird.
 
 <a name="orbitdebug-getter-und-setter"></a>
-###### *OrbitDebug Getter und Setter:*
+##### *OrbitDebug Getter und Setter:*
 
 Jetzt fügen wir die Getter- und Setter-Funktionen hinzu, um die Properties zu erhalten und zu setzen.
 Die Getter- und Setter-Funktionen sollten folgendermaßen aussehen:
@@ -1365,7 +1363,7 @@ public:
 Die Getter- und Setter-Funktionen sind `inline` und geben die Properties zurück bzw. setzen die Properties.
 
 <a name="orbit-debug-funktionen"></a>
-###### *OrbitDebug Funktionen:*
+##### *OrbitDebug Funktionen:*
 
 Als Nächstes fügen wir die Interface-Funktionen hinzu.
 
@@ -1565,8 +1563,8 @@ Die Beschleunigung wird für jeden Himmelskörper berechnet, indem die Richtung,
 <a name="orbit-debuger-verwenden"></a>
 ### Orbit-Debugger verwenden:
 
-<a name="orbit-debugger-erstellen"></a>
-##### *Orbit-Debugger erstellen:*
+<a name="orbit-debugger-blueprint-erstellen"></a>
+##### *Orbit Debugger Blueprint erstellen:*
 
 Um den Debugger zu verwenden, erstellen wir eine neues Blueprint, indem wir mit Rechtsklick auf den Ordner `Blueprints` und dann auf `Blueprint Class` klicken.
 Wir suchen nach `AOrbitDebug` und wählen die Klasse als Parent Class aus.
