@@ -1603,6 +1603,13 @@ Es macht absolut Sinn mit den Himmelskörper Werten (Radius, Masse und Initial-G
 Die Kalkulationen in den [Einsatzmitteln](#einsatzmittel) können dabei helfen eine realistische Simulation zu erstellen.
 
 ------------------------------------------------------------------------------------------------------------
+
+Wenn du das Sonnensystem als Modell nachbauen möchtest, kannst du die Himmelskörper und Orbits wie folgt konfigurieren:
+[Modell-Kalkulationen](https://github.com/goldbarth/SolarSystem/blob/goldbarth/docs/calc/README.md)
+
+Hier sind alle Werte (Skalierung, Masse, Geschwindigkeit, Abstand zur Sonne) für die Himmelskörper im Sonnensystem aufgelistet.
+
+------------------------------------------------------------------------------------------------------------
 <a name="einsatzmittel"></a>
 ## Einsatzmittel
 

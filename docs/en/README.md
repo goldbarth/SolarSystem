@@ -1642,6 +1642,14 @@ Examples of how the debugger can be used.
 It makes perfect sense to experiment with the celestial body values (radius, mass and initial velocity) and change them.
 The calculations in the [Resources](#resources) can help to create a realistic simulation.
 
+
+------------------------------------------------------------------------------------------------------------
+
+If you want to recreate the solar system as a model, you can configure the celestial bodies and orbits as follows:
+[Model calculations](https://github.com/goldbarth/SolarSystem/blob/goldbarth/docs/calc/README.md)
+
+All values (scaling, mass, speed, distance to the sun) for the celestial bodies in the solar system are listed here.
+
 ------------------------------------------------------------------------------------------------------------
 <a name="resources"></a>
 ## Resources
