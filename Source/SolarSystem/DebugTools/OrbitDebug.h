@@ -26,8 +26,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
 	bool bDrawOrbitPaths;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
-	bool bUseTaskGraph;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
+	// bool bUseTaskGraph;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
 	float LineThickness = 1.5f;
@@ -49,26 +49,35 @@ public:
 	void SetUseTaskGraph(const bool& bNewUseTaskGraph) { bUseTaskGraph = bNewUseTaskGraph; }
 
 	float GetLineThickness() const { return LineThickness; }
-	void SetLineThickness(const float& NewLineThickness) { LineThickness = NewLineThickness; }
+	void SetLineThickness(const float& NewLineThickness) { LineThickness = NewLineThickness; UpdateHasChanged(true); }
 
 	int GetNumSteps() const { return NumSteps; }
-	void SetNumSteps(const int& NewNumSteps) { NumSteps = NewNumSteps; }
+	void SetNumSteps(const int& NewNumSteps) { NumSteps = NewNumSteps; UpdateHasChanged(true); }
 
 	float GetTimeStep() const { return TimeStep; }
-	void SetTimeStep(const float& NewTimeStep) { TimeStep = NewTimeStep; }
+	void SetTimeStep(const float& NewTimeStep) { TimeStep = NewTimeStep; UpdateHasChanged(true); }
+
+	void UpdateHasChanged(const bool& bNewHasChanged) { bHasChanged = bNewHasChanged; }
 
 #pragma endregion
-
-	// Interface implementation
+	
 	virtual void DrawOrbitPaths() override;
 
 private:
 	const char* CentralBodyTag = "Center";
 
-	TArray<FVirtualBody> InitializeVirtualBodies(const TArray<AActor*>& Bodies);
-	void SimulateOrbits(TArray<FVirtualBody>& VirtualBodies, TArray<FVector>& DrawPoints) const;
-	void UpdateVelocities(TArray<FVirtualBody>& VirtualBodies) const;
-	void UpdatePositions(TArray<FVirtualBody>& VirtualBodies, TArray<FVector>& DrawPoints, const int& Step) const;
-	void DrawPaths(const TArray<FVirtualBody>& VirtualBodies, const TArray<FVector>& DrawPoints, TArray<AActor*> Bodies) const;
-	FVector CalculateAcceleration(const int& BodyIndex, const TArray<FVirtualBody>& VirtualBodies) const;
+	UPROPERTY()
+	TArray<TWeakObjectPtr<ACelestialBody>> Bodies;
+	TArray<FVirtualBody> VirtualBodies;
+	TArray<FVector> Points;
+	bool bHasChanged = true;
+
+	void InitializeVirtualBodies(TArray<FVirtualBody>& OutVirtualBodies, const TArray<TWeakObjectPtr<ACelestialBody>>& DrawBodies);
+	void SimulateOrbits(TArray<FVirtualBody>& InVirtualBodies, TArray<FVector>& DrawPoints) const;
+	void UpdateVelocities(TArray<FVirtualBody>& InVirtualBodies) const;
+	void UpdatePositions(TArray<FVirtualBody>& InVirtualBodies, TArray<FVector>& DrawPoints, const int& Step) const;
+	void DrawPaths(const TArray<FVirtualBody>& InVirtualBodies, const TArray<FVector>& DrawPoints) const;
+	FVector CalculateAcceleration(const int& BodyIndex, const TArray<FVirtualBody>& InVirtualBodies) const;
+
+	TArray<TWeakObjectPtr<ACelestialBody>> ConvertToWeakObjectPtrArray(const TArray<AActor*>& ActorArray) const;
 };

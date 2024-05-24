@@ -14,9 +14,9 @@ struct FVirtualBody
 	FVector Location;
 	FVector Velocity;
 
-	explicit FVirtualBody(const ACelestialBody* Body)
+	explicit FVirtualBody(const TWeakObjectPtr<ACelestialBody>& Body)
 	{
-		if (Body)
+		if (Body.IsValid())
 		{
 			Mass = Body->GetMass();
 			Location = Body->GetActorLocation();
