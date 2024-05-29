@@ -17,10 +17,10 @@ class SOLARSYSTEM_API AOrbitSimulation_GameMode : public AGameModeBase
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Celestial Objects")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Celestial Bodies")
 	AOrbitSimulation* OrbitSimulation;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Celestial Objects")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Celestial Bodies")
 	ACelestialBodyRegistry* CelestialBodyRegistry;
 
 

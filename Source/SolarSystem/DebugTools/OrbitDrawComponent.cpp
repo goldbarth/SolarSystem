@@ -18,9 +18,9 @@ void UOrbitDrawComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 void UOrbitDrawComponent::DrawOrbits() const
 {
-	if (OrbitDrawer && OrbitDrawer->GetDrawOrbitPaths())
+	if (OrbitDrawer)
 	{
-		OrbitDrawer->DrawOrbitPaths();
+		OrbitDrawer->StartOrbitDebugger();
 	}
 }
 

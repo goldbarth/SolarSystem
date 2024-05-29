@@ -6,6 +6,7 @@
 #include "FVirtualBody.h"
 #include "IVirtualBody.h"
 #include "OrbitDrawComponent.h"
+#include "Components/SplineComponent.h"
 #include "GameFramework/Actor.h"
 #include "OrbitDebug.generated.h"
 
@@ -19,65 +20,64 @@ class SOLARSYSTEM_API AOrbitDebug : public AActor, public IVirtualBody
 
 protected:
 	AOrbitDebug();
-	
+
 	UPROPERTY(VisibleDefaultsOnly)
 	UOrbitDrawComponent* OrbitDrawComponent;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
 	bool bDrawOrbitPaths;
 
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
-	// bool bUseTaskGraph;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
-	float LineThickness = 1.5f;
+	float LineThickness = 1.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
-	int NumSteps = 35000;
+	int NumSteps = 100;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
-	float TimeStep = 0.1f;
-	
+	float TimeStep = 500.0f;
+
 public:
 	
 #pragma region Getters and Setters
 	
 	virtual bool GetDrawOrbitPaths() const override { return bDrawOrbitPaths; }
-	void SetDrawOrbitPaths(const bool& bNewDrawOrbitPaths) { bDrawOrbitPaths = bNewDrawOrbitPaths; }
-
-	virtual bool GetUseTaskGraph() const override { return bUseTaskGraph; }
-	void SetUseTaskGraph(const bool& bNewUseTaskGraph) { bUseTaskGraph = bNewUseTaskGraph; }
+	void SetDrawOrbitPaths(const bool& bNewDrawOrbitPaths) { bDrawOrbitPaths = bNewDrawOrbitPaths; UpdateOrbitChanged(true); }
 
 	float GetLineThickness() const { return LineThickness; }
-	void SetLineThickness(const float& NewLineThickness) { LineThickness = NewLineThickness; UpdateHasChanged(true); }
+	void SetLineThickness(const float& NewLineThickness) { LineThickness = NewLineThickness; UpdateOrbitChanged(true); }
 
 	int GetNumSteps() const { return NumSteps; }
-	void SetNumSteps(const int& NewNumSteps) { NumSteps = NewNumSteps; UpdateHasChanged(true); }
+	void SetNumSteps(const int& NewNumSteps) { NumSteps = NewNumSteps; UpdateOrbitChanged(true); }
 
 	float GetTimeStep() const { return TimeStep; }
-	void SetTimeStep(const float& NewTimeStep) { TimeStep = NewTimeStep; UpdateHasChanged(true); }
+	void SetTimeStep(const float& NewTimeStep) { TimeStep = NewTimeStep; UpdateOrbitChanged(true); }
 
-	void UpdateHasChanged(const bool& bNewHasChanged) { bHasChanged = bNewHasChanged; }
+	void UpdateOrbitChanged(const bool& bNewHasChanged) { bOrbitChanged = bNewHasChanged; }
 
 #pragma endregion
 	
-	virtual void DrawOrbitPaths() override;
+	virtual void StartOrbitDebugger() override;
 
 private:
-	const char* CentralBodyTag = "Center";
-
 	UPROPERTY()
 	TArray<TWeakObjectPtr<ACelestialBody>> Bodies;
 	TArray<FVirtualBody> VirtualBodies;
 	TArray<FVector> Points;
-	bool bHasChanged = true;
+	bool bOrbitChanged = true;
 
-	void InitializeVirtualBodies(TArray<FVirtualBody>& OutVirtualBodies, const TArray<TWeakObjectPtr<ACelestialBody>>& DrawBodies);
-	void SimulateOrbits(TArray<FVirtualBody>& InVirtualBodies, TArray<FVector>& DrawPoints) const;
-	void UpdateVelocities(TArray<FVirtualBody>& InVirtualBodies) const;
-	void UpdatePositions(TArray<FVirtualBody>& InVirtualBodies, TArray<FVector>& DrawPoints, const int& Step) const;
-	void DrawPaths(const TArray<FVirtualBody>& InVirtualBodies, const TArray<FVector>& DrawPoints) const;
-	FVector CalculateAcceleration(const int& BodyIndex, const TArray<FVirtualBody>& InVirtualBodies) const;
+	void SimulateOrbits();
+	bool SetPoints();
+	bool GetAllCelestialBodies();
+	void InitializeVirtualBodies();
+	
+	void CalculateOrbits();
+	void UpdateVelocities();
+	void UpdatePositions(const int& Step);
+	
+	void DrawDebugPaths() const;
+	
+	FVector CalculateAcceleration(const int& BodyIndex) const;
 
 	TArray<TWeakObjectPtr<ACelestialBody>> ConvertToWeakObjectPtrArray(const TArray<AActor*>& ActorArray) const;
 };

@@ -24,6 +24,5 @@ public:
 	bool bUseTaskGraph = false;
 	
 	virtual bool GetDrawOrbitPaths() const = 0;
-	virtual bool GetUseTaskGraph() const = 0;
-	virtual void DrawOrbitPaths() = 0;
+	virtual void StartOrbitDebugger() = 0;
 };

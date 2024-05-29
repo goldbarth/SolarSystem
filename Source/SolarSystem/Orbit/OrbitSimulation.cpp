@@ -39,7 +39,7 @@ void AOrbitSimulation::UpdateAllObjects(const float& TimeStep) const
 	}
 	else
 	{
-		LOG_DISPLAY("CelestialObjectManager is nullptr! In Orbit Simulation!");
+		LOG_DISPLAY("CelestialObjectManager is nullptr!");
 	}
 	
 }
@@ -113,11 +113,11 @@ void AOrbitSimulation::GetCelestialBodyRegistry()
 		CelestialBodyRegistry = GameMode->GetCelestialBodyRegistry();
 		if (!CelestialBodyRegistry)
 		{
-			LOG_DISPLAY("Something went wrong! Failed to create CelestialBodyRegistry! In Orbit Simulation!")
+			LOG_DISPLAY("Something went wrong! Failed to create CelestialBodyRegistry!")
 		}
 	}
 	else
 	{
-		LOG_ERROR("Failed to cast Game Mode! In Orbit Simulation!")
+		LOG_ERROR("Failed to cast Game Mode!")
 	}
 }

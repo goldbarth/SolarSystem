@@ -14,6 +14,8 @@ struct FVirtualBody
 	FVector Location;
 	FVector Velocity;
 
+	FLinearColor LineColor;
+
 	explicit FVirtualBody(const TWeakObjectPtr<ACelestialBody>& Body)
 	{
 		if (Body.IsValid())
@@ -21,6 +23,7 @@ struct FVirtualBody
 			Mass = Body->GetMass();
 			Location = Body->GetActorLocation();
 			Velocity = Body->GetInitialVelocity();
+			LineColor = Body->GetLineColor();
 		}
 	}
 };

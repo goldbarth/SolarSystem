@@ -20,20 +20,20 @@ void AOrbitSimulation_GameMode::Initialize()
 		CelestialBodyRegistry = World->SpawnActor<ACelestialBodyRegistry>();
 		if (!CelestialBodyRegistry)
 		{
-			LOG_WARNING("Failed to create CelestialObjectManager! (DemoOrbitSimulation_GameMode)")
+			LOG_WARNING("Failed to create CelestialObjectManager!")
 		}
 		else
 		{
-			LOG_DISPLAY("Created CelestialObjectManager! (DemoOrbitSimulation_GameMode)")
+			LOG_DISPLAY("Created CelestialObjectManager!")
 		}
 		OrbitSimulation = World->SpawnActor<AOrbitSimulation>();
 		if (!OrbitSimulation)
 		{
-			LOG_ERROR("Failed to create OrbitSimulation! (DemoOrbitSimulation_GameMode)")
+			LOG_ERROR("Failed to create OrbitSimulation!")
 		}
 		else
 		{
-			LOG_DISPLAY("Created OrbitSimulation! (DemoOrbitSimulation_GameMode)")
+			LOG_DISPLAY("Created OrbitSimulation!")
 		}
 	}
 }

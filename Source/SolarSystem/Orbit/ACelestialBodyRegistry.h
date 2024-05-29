@@ -24,7 +24,7 @@ public:
 	FCelestialObjectAddedDelegate OnCelestialBodyAdded;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Celestial Objects")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Celestial Bodies")
 	TArray<ACelestialBody*> CelestialBodies;
 
 public:

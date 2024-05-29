@@ -4,6 +4,7 @@
 
 #include "OrbitDrawComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "SolarSystem/Defines/Debug.h"
 #include "SolarSystem/Structs/Universe.h"
 
 AOrbitDebug::AOrbitDebug()
@@ -13,98 +14,117 @@ AOrbitDebug::AOrbitDebug()
 	RootComponent = OrbitDrawComponent;
 }
 
-void AOrbitDebug::DrawOrbitPaths()
+void AOrbitDebug::StartOrbitDebugger()
 {
-	if (bHasChanged)
+	if (bOrbitChanged)
 	{
-		const UWorld* World = GetWorld();
-		if (World == nullptr) return;
-		
-		TArray<AActor*> FoundActors;
-		UGameplayStatics::GetAllActorsOfClass(World, ACelestialBody::StaticClass(), FoundActors);
-		Bodies = ConvertToWeakObjectPtrArray(FoundActors);
-		
-		if (Bodies.Num() == 0) return;
-		
-		Points.SetNum(Bodies.Num() * GetNumSteps());
-		
-		InitializeVirtualBodies(VirtualBodies, Bodies);
-		SimulateOrbits(VirtualBodies, Points);
-	
-		bHasChanged = false;
+		SimulateOrbits();
+		bOrbitChanged = false;
 	}
-	
-	DrawPaths(VirtualBodies, Points);
+
+	if (bDrawOrbitPaths) DrawDebugPaths();
 }
 
-void AOrbitDebug::InitializeVirtualBodies(TArray<FVirtualBody>& OutVirtualBodies, const TArray<TWeakObjectPtr<ACelestialBody>>& DrawBodies)
+void AOrbitDebug::SimulateOrbits()
 {
-	OutVirtualBodies.Empty();
-	OutVirtualBodies.Reserve(DrawBodies.Num());
+	if (!GetAllCelestialBodies()) return;
+	if (!SetPoints()) return;
+	InitializeVirtualBodies();
+	CalculateOrbits();
+}
+
+bool AOrbitDebug::GetAllCelestialBodies()
+{
+	const UWorld* World = GetWorld();
+	if (World == nullptr) return false;
 	
-	for (const auto& Body : DrawBodies)
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(World, ACelestialBody::StaticClass(), FoundActors);
+	Bodies = ConvertToWeakObjectPtrArray(FoundActors);
+	return true;
+}
+
+bool AOrbitDebug::SetPoints()
+{
+	if (Bodies.Num() == 0) return false;
+	Points.SetNum(Bodies.Num() * GetNumSteps());
+	return true;
+}
+
+void AOrbitDebug::InitializeVirtualBodies()
+{
+	VirtualBodies.Empty();
+	VirtualBodies.Reserve(Bodies.Num());
+	
+	for (const auto& Body : Bodies)
 	{
 		if (Body.IsValid())
 		{
-			OutVirtualBodies.Add(FVirtualBody(Body));
+			VirtualBodies.Add(FVirtualBody(Body));
 		}
 	}
 }
 
-void AOrbitDebug::SimulateOrbits(TArray<FVirtualBody>& InVirtualBodies, TArray<FVector>& DrawPoints) const
+void AOrbitDebug::CalculateOrbits() 
 {
 	for (int Step = 0; Step < GetNumSteps(); ++Step)
 	{
-		UpdateVelocities(InVirtualBodies);
-		UpdatePositions(InVirtualBodies, DrawPoints, Step);
+		UpdateVelocities();
+		UpdatePositions(Step);
 	}
 }
 
-void AOrbitDebug::UpdateVelocities(TArray<FVirtualBody>& InVirtualBodies) const
+void AOrbitDebug::UpdateVelocities()
 {
-	for (int i = 0; i < InVirtualBodies.Num(); ++i)
+	for (int i = 0; i < VirtualBodies.Num(); ++i)
 	{
-		InVirtualBodies[i].Velocity += CalculateAcceleration(i, InVirtualBodies) * GetTimeStep();
+		VirtualBodies[i].Velocity += CalculateAcceleration(i) * GetTimeStep();
 	}
 }
 
-void AOrbitDebug::UpdatePositions(TArray<FVirtualBody>& InVirtualBodies, TArray<FVector>& DrawPoints, const int& Step) const
+void AOrbitDebug::UpdatePositions(const int& Step)
 {
-	for (int i = 0; i < InVirtualBodies.Num(); ++i)
+	for (int i = 0; i < VirtualBodies.Num(); ++i)
 	{
-		InVirtualBodies[i].Location += InVirtualBodies[i].Velocity * GetTimeStep();
-		DrawPoints[i * GetNumSteps() + Step] = InVirtualBodies[i].Location;
+		VirtualBodies[i].Location += VirtualBodies[i].Velocity * GetTimeStep();
+		Points[i * GetNumSteps() + Step] = VirtualBodies[i].Location;
 	}
 }
 
-void AOrbitDebug::DrawPaths(const TArray<FVirtualBody>& InVirtualBodies, const TArray<FVector>& DrawPoints) const
+void AOrbitDebug::DrawDebugPaths() const
 {
-	const int NumSteps = GetNumSteps();
-	for (int i = 0; i < InVirtualBodies.Num(); ++i)
+	const int Steps = GetNumSteps();
+	const float Thickness = GetLineThickness();
+	for (int i = 0; i < VirtualBodies.Num(); ++i)
 	{
-		const ACelestialBody* CelestialBody = Cast<ACelestialBody>(Bodies[i]);
-		FColor PathColor = CelestialBody->GetLineColor().ToFColor(true);
-		if (CelestialBody == nullptr || CelestialBody->ActorHasTag(CentralBodyTag)) continue;
-		for (int Steps = 0; Steps < NumSteps - 1; ++Steps)
+		for (int Step = 0; Step < Steps - 1; ++Step)
 		{
-			FVector Point = DrawPoints[i * NumSteps + Steps];
-			DrawDebugPoint(GetWorld(), Point, GetLineThickness(), PathColor, false, -1.0f);
+			FVector Point = Points[i * Steps + Step];
+			DrawDebugPoint(GetWorld(), Point, Thickness,
+				VirtualBodies[i].LineColor.ToFColor(true), false, -1.0f);
 		}
 	}
 }
 
-FVector AOrbitDebug::CalculateAcceleration(const int& BodyIndex, const TArray<FVirtualBody>& InVirtualBodies) const
+{
+	{
+		{
+		}
+	}
+}
+
+FVector AOrbitDebug::CalculateAcceleration(const int& BodyIndex) const
 {
 	FVector Acceleration = FVector::ZeroVector;
 
-	for (int i = 0; i < InVirtualBodies.Num(); ++i)
+	for (int i = 0; i < VirtualBodies.Num(); ++i)
 	{
 		if(BodyIndex != i)
 		{
-			const FVector Direction = InVirtualBodies[i].Location - InVirtualBodies[BodyIndex].Location;
-			const float Distance = FVector::Dist(InVirtualBodies[i].Location, InVirtualBodies[BodyIndex].Location);
+			const FVector Direction = VirtualBodies[i].Location - VirtualBodies[BodyIndex].Location;
+			const float Distance = FVector::Dist(VirtualBodies[i].Location, VirtualBodies[BodyIndex].Location);
 			const float DistanceSquared = Distance * Distance;
-			Acceleration += Direction.GetSafeNormal() * (FUniverse::GravitationalConstant * InVirtualBodies[i].Mass) / DistanceSquared;
+			Acceleration += Direction.GetSafeNormal() * (FUniverse::GravitationalConstant * VirtualBodies[i].Mass) / DistanceSquared;
 		}
 	}
 	
@@ -116,14 +136,23 @@ TArray<TWeakObjectPtr<ACelestialBody>> AOrbitDebug::ConvertToWeakObjectPtrArray(
 	TArray<TWeakObjectPtr<ACelestialBody>> WeakPtrArray;
 	WeakPtrArray.Reserve(ActorArray.Num());
 
-	for (AActor* Actor : ActorArray)
+	for (auto* Actor : ActorArray)
 	{
-		if (ACelestialBody* CelestialBody = Cast<ACelestialBody>(Actor))
+		ACelestialBody* CelestialBody = Cast<ACelestialBody>(Actor);
+		if (CelestialBody != nullptr)
 		{
 			WeakPtrArray.Add(CelestialBody);
 		}
 	}
 
 	return WeakPtrArray;
+}
+
+void AOrbitDebug::DeactivateSplineDebugDraw()
+{
+	for (auto* Spline : SplineComponents)
+	{
+		Spline->SetDrawDebug(false);
+	}
 }
 
