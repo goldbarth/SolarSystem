@@ -27,6 +27,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
 	bool bDrawOrbitPaths;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
+	bool bDrawSplines;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
 	float LineThickness = 1.0f;
@@ -44,6 +46,9 @@ public:
 	virtual bool GetDrawOrbitPaths() const override { return bDrawOrbitPaths; }
 	void SetDrawOrbitPaths(const bool& bNewDrawOrbitPaths) { bDrawOrbitPaths = bNewDrawOrbitPaths; UpdateOrbitChanged(true); }
 
+	bool GetDrawSplines() const { return bDrawSplines; }
+	void SetDrawSplines(const bool& bNewDrawSplines) { bDrawSplines = bNewDrawSplines; UpdateOrbitChanged(true); }
+	
 	float GetLineThickness() const { return LineThickness; }
 	void SetLineThickness(const float& NewLineThickness) { LineThickness = NewLineThickness; UpdateOrbitChanged(true); }
 
@@ -61,6 +66,8 @@ public:
 
 private:
 	UPROPERTY()
+	TArray<USplineComponent*> SplineComponents;
+	UPROPERTY()
 	TArray<TWeakObjectPtr<ACelestialBody>> Bodies;
 	TArray<FVirtualBody> VirtualBodies;
 	TArray<FVector> Points;
@@ -76,8 +83,10 @@ private:
 	void UpdatePositions(const int& Step);
 	
 	void DrawDebugPaths() const;
+	void DrawSplinePaths();
 	
 	FVector CalculateAcceleration(const int& BodyIndex) const;
 
 	TArray<TWeakObjectPtr<ACelestialBody>> ConvertToWeakObjectPtrArray(const TArray<AActor*>& ActorArray) const;
+	void DeactivateSplineDebugDraw();
 };
