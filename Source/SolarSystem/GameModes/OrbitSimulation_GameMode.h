@@ -17,6 +17,8 @@ class SOLARSYSTEM_API AOrbitSimulation_GameMode : public AGameModeBase
 	GENERATED_BODY()
 
 protected:
+	AOrbitSimulation_GameMode();
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Celestial Bodies")
 	AOrbitSimulation* OrbitSimulation;
 	

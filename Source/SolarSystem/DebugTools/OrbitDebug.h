@@ -21,8 +21,14 @@ class SOLARSYSTEM_API AOrbitDebug : public AActor, public IVirtualBody
 protected:
 	AOrbitDebug();
 
-	UPROPERTY(VisibleDefaultsOnly)
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* Root;
+	
+	UPROPERTY(VisibleAnywhere)
 	UOrbitDrawComponent* OrbitDrawComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
+	UStaticMesh* SplineMesh;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Orbit Debug")
 	bool bDrawOrbitPaths;
@@ -62,13 +68,14 @@ public:
 
 #pragma endregion
 	
-	virtual void StartOrbitDebugger() override;
+	virtual void RunOrbitDebugger() override;
 
 private:
 	UPROPERTY()
 	TArray<USplineComponent*> SplineComponents;
 	UPROPERTY()
 	TArray<TWeakObjectPtr<ACelestialBody>> Bodies;
+	
 	TArray<FVirtualBody> VirtualBodies;
 	TArray<FVector> Points;
 	bool bOrbitChanged = true;
@@ -81,11 +88,16 @@ private:
 	void CalculateOrbits();
 	void UpdateVelocities();
 	void UpdatePositions(const int& Step);
+	void RungeKuttaIntegration(int Step);
 	
+	FVector CalculateAcceleration(int BodyIndex, const FVector& TempPosition) const;
+	FVector CalculateAcceleration(const int& BodyIndex) const;
 	void DrawDebugPaths() const;
+	void AddSplineComponents();
+	void AddSegmentPoints();
+	void ClearSplinePoints();
 	void DrawSplinePaths();
 	
-	FVector CalculateAcceleration(const int& BodyIndex) const;
 
 	TArray<TWeakObjectPtr<ACelestialBody>> ConvertToWeakObjectPtrArray(const TArray<AActor*>& ActorArray) const;
 	void DeactivateSplineDebugDraw();

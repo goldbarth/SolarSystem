@@ -20,7 +20,7 @@ void UOrbitDrawComponent::DrawOrbits() const
 {
 	if (OrbitDrawer)
 	{
-		OrbitDrawer->StartOrbitDebugger();
+		OrbitDrawer->RunOrbitDebugger();
 	}
 }
 
