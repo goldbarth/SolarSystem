@@ -37,7 +37,6 @@ void ACelestialBody::SetMass(const float& NewMass)
 {
 	Mass = NewMass;
 	MeshComponent->SetMassOverrideInKg(NAME_None, Mass, true);
-	// GravityCalculation();
 }
 
 void ACelestialBody::UpdateVelocity(const FVector& Acceleration, const float& TimeStep)

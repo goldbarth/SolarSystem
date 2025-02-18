@@ -97,9 +97,9 @@ TSharedRef<SDockTab> FOrbitDebugDisplayModule::OnSpawnPluginTab(const FSpawnTabA
 		[
 			MainVerticalBox
 		];
-}
-
+	
 #pragma endregion
+}
 
 #pragma region OrbitDebugDisplayActions
 

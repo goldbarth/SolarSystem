@@ -38,7 +38,7 @@ Sun values:
 On the Y axis:
 
 - Mercury: 390 UU (0,39 AU) = 53242,0
-- Venus: &nbsp;&nbsp; 720 UU (0,72 AU) = 86242,0,0
+- Venus: &nbsp;&nbsp; 720 UU (0,72 AU) = 86242,0
 - Earth: &nbsp;&nbsp;&nbsp; 1.000 UU (1,00 AU) = 114242,0
 - Mars:	&nbsp;&nbsp;&nbsp;&nbsp; 1.520 UU (1,52 AU) = 166242,0
 - Jupiter: &nbsp;&nbsp; 5.200 UU (5,20 AU) = 534242,0

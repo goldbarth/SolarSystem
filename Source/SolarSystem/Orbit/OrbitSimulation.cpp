@@ -86,7 +86,7 @@ FVector AOrbitSimulation::CalculateGravitationalAcceleration(const FVector& Othe
 		if (Obj == Object) continue;
 
 		// Gravitational constant G
-		const float G = FUniverse::GravitationalConstant;
+		constexpr float G = FUniverse::GravitationalConstant;
 		// Mass of the sample object m
 		const float M = Obj->GetMass();
 		// Distance between two objects r = |r1 - r2| r = R
@@ -113,7 +113,7 @@ void AOrbitSimulation::GetCelestialBodyRegistry()
 		CelestialBodyRegistry = GameMode->GetCelestialBodyRegistry();
 		if (!CelestialBodyRegistry)
 		{
-			LOG_DISPLAY("Something went wrong! Failed to create CelestialBodyRegistry!")
+			LOG_WARNING("Something went wrong! Failed to create CelestialBodyRegistry!")
 		}
 	}
 	else

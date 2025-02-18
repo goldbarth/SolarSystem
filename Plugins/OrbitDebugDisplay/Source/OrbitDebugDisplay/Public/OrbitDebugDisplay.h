@@ -71,6 +71,8 @@ private:
 	TSharedRef<class SDockTab> OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs);
 	ECheckBoxState IsDrawBoxChecked(EDrawPathType PathType) const;
 
+#pragma region Custom Widget Creation
+
 	TSharedRef<SWidget> CreateCheckBox(const FCheckboxRowParams& Params) const;
 	TSharedRef<SWidget> CreateTextBox(const FTextBoxRowParams& Params);
 	TSharedRef<SWidget> CreateTextBlock(const FTextBlockParams& Params);
@@ -80,6 +82,8 @@ private:
 	void HandleLineThicknessTextCommited(const FText& Text, ETextCommit::Type CommitType);
 	void HandleNumStepsTextCommited(const FText& Text, ETextCommit::Type CommitType);
 	void HandleTimeStepTextCommited(const FText& Text, ETextCommit::Type CommitType);
+
+#pragma endregion
 
 #pragma region Widget Row Templates
 
